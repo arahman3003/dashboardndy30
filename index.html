@@ -853,10 +853,6 @@
       }
     }
 
-
-    /* CACHE CEPAT SAAT REFRESH */
-    .page{contain:layout style}
-
 </style>
 
   <script>
@@ -1127,20 +1123,6 @@
 
   <div id="toast" class="toast"></div>
 
-  <script>
-    (function(){
-      function safeReveal(){
-        var loader=document.getElementById("dashboardLoading");
-        if(loader) loader.classList.add("hidden");
-        var app=document.getElementById("app");
-        var auth=document.getElementById("authScreen");
-        if(app && !app.classList.contains("hidden")) return;
-        if(auth) auth.classList.remove("hidden");
-      }
-      window.setTimeout(safeReveal, 2200);
-    })();
-  </script>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
@@ -1198,22 +1180,10 @@
       $("#authScreen").classList.toggle("hidden",show);
       $("#app").classList.toggle("hidden",!show);
     }
-    function localGet(key){
-      try{return JSON.parse(localStorage.getItem(key)||"[]")}
-      catch(err){console.warn("Cache tidak terbaca:",key,err);return []}
-    }
-    function localSet(key,data){
-      try{localStorage.setItem(key,JSON.stringify(data))}
-      catch(err){console.warn("Cache penuh, data tetap aman di Firebase:",key,err)}
-    }
-    function localSettings(){
-      try{return JSON.parse(localStorage.getItem("ndy30Settings") || "{}")}
-      catch(err){console.warn("Pengaturan cache tidak terbaca:",err);return {}}
-    }
-    function saveLocalSettings(v){
-      try{localStorage.setItem("ndy30Settings", JSON.stringify(v))}
-      catch(err){console.warn("Pengaturan cache tidak dapat disimpan:",err)}
-    }
+    function localGet(key){ try{return JSON.parse(localStorage.getItem(key)||"[]")}catch{return []} }
+    function localSet(key,data){ localStorage.setItem(key,JSON.stringify(data)); }
+    function localSettings(){ return JSON.parse(localStorage.getItem("ndy30Settings") || "{}"); }
+    function saveLocalSettings(v){ localStorage.setItem("ndy30Settings", JSON.stringify(v)); }
 
     const LAST_PAGE_KEY="ndy30LastActivePage";
     const VALID_PAGES=["dashboard","notepad","prediksi","gambar"];
@@ -1411,30 +1381,18 @@
       applyDashboardSettings(dashboardSettings);
     }
 
-    function loadCachedDashboardData(){
+    function loadPreviewData(){
       notes=localGet("ndy30Notes");
       predictions=localGet("ndy30Predictions");
       images=localGet("ndy30Images");
-      const s=localSettings();
-      dashboardSettings={...dashboardSettings,...s};
-      applyDashboardSettings(s);
+      const s=localSettings(); applyDashboardSettings(s);
       renderAll();
     }
 
-    function loadPreviewData(){
-      loadCachedDashboardData();
-    }
-
-    // Saat refresh: tampilkan data terakhir dari cache tanpa menghambat Firebase.
-    try{
-      loadCachedDashboardData();
-      const cachedSettingsAtBoot = localSettings();
-      if(Object.keys(cachedSettingsAtBoot).length){
-        dashboardSettings = {...dashboardSettings, ...cachedSettingsAtBoot};
-        applyDashboardSettings(dashboardSettings);
-      }
-    }catch(cacheError){
-      console.warn("Cache awal dilewati:",cacheError);
+    const cachedSettingsAtBoot = localSettings();
+    if(Object.keys(cachedSettingsAtBoot).length){
+      dashboardSettings = {...dashboardSettings, ...cachedSettingsAtBoot};
+      applyDashboardSettings(dashboardSettings);
     }
 
     function startFirebase(){
@@ -1449,7 +1407,6 @@
           id:key,
           updatedAtText:item.updatedAt ? new Date(item.updatedAt).toLocaleString("id-ID") : "Baru saja"
         })).sort((a,b) => (b.updatedAt||0) - (a.updatedAt||0));
-        localSet("ndy30Notes", notes);
         renderNotes();
       });
 
@@ -1457,7 +1414,6 @@
         const val = snap.val() || {};
         predictions = Object.entries(val).map(([key,item]) => ({...item,id:key}))
           .sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
-        localSet("ndy30Predictions", predictions);
         renderPredictions();
       });
 
@@ -1465,7 +1421,6 @@
         const val = snap.val() || {};
         images = Object.entries(val).map(([key,item]) => ({...item,id:key}))
           .sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
-        localSet("ndy30Images", images);
         renderImages();
       });
 
@@ -1480,7 +1435,6 @@
         if(user){
           currentUser = user;
           previewMode = false;
-          loadCachedDashboardData();
           dashboardSettings = {...dashboardSettings, ...localSettings()};
           applyDashboardSettings(dashboardSettings);
           setAppVisible(true);
@@ -1979,13 +1933,14 @@ $("#noteImageFile")?.addEventListener("change",async e=>{
     // Saat refresh, tetap buka menu terakhir yang sedang dipakai.
     setTimeout(()=>switchPage(getLastPage(),{save:false,scroll:false}),0);
 
-    // Pengaman kedua: loading tidak boleh bertahan terlalu lama.
+    // Cadangan: bila koneksi Firebase sangat lambat, tampilkan login setelah 6 detik.
     setTimeout(()=>{
       const loader=$("#dashboardLoading");
-      if(!loader || loader.classList.contains("hidden")) return;
-      loader.classList.add("hidden");
-      if(!currentUser) $("#authScreen").classList.remove("hidden");
-    },2500);
+      if(loader && !loader.classList.contains("hidden") && !currentUser){
+        loader.classList.add("hidden");
+        $("#authScreen").classList.remove("hidden");
+      }
+    },6000);
 
         if(FIREBASE_READY) startFirebase();
   </script>
