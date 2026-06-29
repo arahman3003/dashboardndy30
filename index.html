@@ -703,6 +703,18 @@
     @keyframes loadingRun{0%{transform:translateX(-115%)}100%{transform:translateX(245%)}}
 
 </style>
+
+  <script>
+    (function(){
+      try{
+        const s = JSON.parse(localStorage.getItem("ndy30Settings") || "{}");
+        const photo = s.dashboardPhoto || s.characterUrl || "";
+        if(photo){
+          window.__ndy30CachedDashboardPhoto = photo;
+        }
+      }catch(e){}
+    })();
+  </script>
 </head>
 <body>
   <section id="dashboardLoading" class="dashboard-loading" aria-live="polite">
@@ -782,7 +794,7 @@
               <span class="character-spark a">✦</span><span class="character-spark b">♥</span>
               <div class="character-card">
                 <!-- GANTI LINK FOTO KARAKTER DI BAWAH INI -->
-                <img id="characterImage" src="https://i.imgur.com/r94GqrT.jpeg" alt="Karakter pemilik dashboard">
+                <img id="characterImage" src="" alt="Karakter pemilik dashboard">
               </div>
               <div class="character-label">Owner Dashboard ✦</div>
             </div>
@@ -1159,7 +1171,7 @@
       }
       await remove(ref(db, `dashboardndy30/images/${imageId}`));
     }
-    let dashboardSettings={profileName:"",profilePhoto:"",dashboardPhoto:"",characterUrl:""};
+    let dashboardSettings={profileName:"",profilePhoto:"",dashboardPhoto:"",characterUrl:"",...localSettings()};
     function initials(name){
       return String(name||"N").trim().split(/\s+/).map(x=>x[0]||"").join("").slice(0,2).toUpperCase()||"N";
     }
@@ -1187,8 +1199,12 @@
     }
     async function saveDashboardSettings(data){
       dashboardSettings={...dashboardSettings,...data};
+      const s=localSettings();
+      Object.assign(s,dashboardSettings);
+      saveLocalSettings(s);
       if(previewMode){
-        const s=localSettings();Object.assign(s,dashboardSettings);saveLocalSettings(s);applyDashboardSettings(dashboardSettings);return;
+        applyDashboardSettings(dashboardSettings);
+        return;
       }
       await update(ref(db,"dashboardndy30/settings"),dashboardSettings);
       applyDashboardSettings(dashboardSettings);
@@ -1200,6 +1216,12 @@
       images=localGet("ndy30Images");
       const s=localSettings(); applyDashboardSettings(s);
       renderAll();
+    }
+
+    const cachedSettingsAtBoot = localSettings();
+    if(Object.keys(cachedSettingsAtBoot).length){
+      dashboardSettings = {...dashboardSettings, ...cachedSettingsAtBoot};
+      applyDashboardSettings(dashboardSettings);
     }
 
     function startFirebase(){
@@ -1232,13 +1254,17 @@
       });
 
       onValue(ref(db, "dashboardndy30/settings"), snap => {
-        applyDashboardSettings(snap.val()||{});
+        const incoming = snap.val() || {};
+        dashboardSettings = {...dashboardSettings, ...incoming};
+        saveLocalSettings({...localSettings(), ...dashboardSettings});
+        applyDashboardSettings(dashboardSettings);
       });
 
       onAuthStateChanged(auth, user => {
         if(user){
           currentUser = user;
           previewMode = false;
+          dashboardSettings = {...dashboardSettings, ...localSettings()};
           applyDashboardSettings(dashboardSettings);
           setAppVisible(true);
           switchPage("dashboard");
