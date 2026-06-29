@@ -774,6 +774,66 @@
       #loginAccessGate .access-card{height:640px!important;min-height:640px!important}
     }
 
+
+    /* BUKA BUKU HALUS — COVER POTRET MENJADI HALAMAN KIRI */
+    #loginAccessGate.book-opening{
+      background:transparent!important;
+    }
+    #loginAccessGate.book-opening .access-card{
+      animation:coverToLeftPage 1.18s cubic-bezier(.17,.84,.28,1) forwards!important;
+      pointer-events:none;
+    }
+    #authScreen.show-login .login-card{
+      visibility:visible!important;
+      pointer-events:auto!important;
+      animation:spreadReveal 1.18s cubic-bezier(.2,.8,.2,1) both!important;
+    }
+    @keyframes spreadReveal{
+      0%{opacity:0;filter:blur(7px);transform:scale(.975)}
+      28%{opacity:.7;filter:blur(2px);transform:scale(.992)}
+      100%{opacity:1;filter:blur(0);transform:scale(1)}
+    }
+    @keyframes coverToLeftPage{
+      0%{
+        width:min(500px,86vw);
+        transform:translateX(0) rotateY(0deg);
+        opacity:1;
+        filter:brightness(1);
+      }
+      30%{
+        width:min(520px,47vw);
+        transform:translateX(-90px) rotateY(-12deg);
+        opacity:1;
+        filter:brightness(.97);
+      }
+      64%{
+        width:min(520px,47vw);
+        transform:translateX(-240px) rotateY(-72deg);
+        opacity:.92;
+        filter:brightness(.84);
+      }
+      86%{
+        width:min(520px,47vw);
+        transform:translateX(-260px) rotateY(-132deg);
+        opacity:.28;
+        filter:brightness(.62);
+      }
+      100%{
+        width:min(520px,47vw);
+        transform:translateX(-260px) rotateY(-160deg);
+        opacity:0;
+        filter:brightness(.48);
+      }
+    }
+    @media(max-width:760px){
+      #loginAccessGate.book-opening .access-card{animation:coverToLeftPageMobile .9s cubic-bezier(.17,.84,.28,1) forwards!important}
+      @keyframes coverToLeftPageMobile{
+        0%{transform:rotateY(0);opacity:1}
+        55%{transform:rotateY(-80deg);opacity:.75}
+        100%{transform:rotateY(-160deg);opacity:0}
+      }
+    }
+
 </style>
 
   <script>
@@ -1352,20 +1412,21 @@
     function openLoginCard(){
       const gate=$("#loginAccessGate");
       const cover=$("#openLoginCard");
-      if(!gate || !cover || cover.classList.contains("opening")) return;
-      // Halaman login muncul di belakang; cover lalu terbuka dari sisi jilid kiri.
+      if(!gate || !cover || gate.classList.contains("book-opening")) return;
+      // Form tampil di belakang, lalu cover berpindah ke sisi kiri dan terbuka dari jilidnya.
       $("#authScreen")?.classList.add("show-login");
+      gate.classList.add("book-opening");
       cover.classList.add("opening");
-      setTimeout(()=>gate.classList.add("hidden"),1210);
-      setTimeout(()=>$("#loginUsername")?.focus(),900);
+      setTimeout(()=>gate.classList.add("hidden"),1190);
+      setTimeout(()=>$("#loginUsername")?.focus(),760);
     }
     function closeLoginCard(){
       if($("#authScreen")?.classList.contains("hidden")) return;
       const gate=$("#loginAccessGate");
       const cover=$("#openLoginCard");
       $("#authScreen")?.classList.remove("show-login");
+      gate?.classList.remove("hidden","book-opening");
       cover?.classList.remove("opening");
-      gate?.classList.remove("hidden");
     }
     $("#openLoginCard")?.addEventListener("click",openLoginCard);
 
