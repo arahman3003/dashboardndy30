@@ -721,13 +721,13 @@
     }
     #loginAccessGate.hidden{visibility:hidden;pointer-events:none}
     .access-card{
-      width:min(100%,1040px);min-height:640px;overflow:hidden;border-radius:34px;
+      width:min(500px,86vw);height:640px;min-height:640px;overflow:hidden;border-radius:30px;
       border:1px solid rgba(255,255,255,.55);background:#381529;
       box-shadow:0 34px 90px rgba(104,31,69,.28);cursor:pointer;position:relative;
       transform:rotateY(0deg);transition:.24s ease;transform-origin:left center;
       transform-style:preserve-3d;will-change:transform;backface-visibility:hidden;
     }
-    .access-card:hover{transform:translateY(-5px) scale(1.006);box-shadow:0 42px 98px rgba(104,31,69,.34)}
+    .access-card:hover{transform:translateY(-5px) scale(1.008);box-shadow:0 42px 98px rgba(104,31,69,.34)}
     .access-card.opening{animation:bookCoverOpen 1.18s cubic-bezier(.18,.82,.16,1) forwards;pointer-events:none}
     .access-card img{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;display:block;filter:brightness(.82)}
     .access-card::before{
@@ -739,8 +739,8 @@
       content:"";position:absolute;inset:0;
       background:linear-gradient(90deg,rgba(45,8,29,.12),transparent 44%),linear-gradient(180deg,transparent 53%,rgba(29,6,22,.76) 100%)
     }
-    .access-card-copy{position:absolute;z-index:4;left:48px;right:48px;bottom:42px;text-align:left;color:#fff}
-    .access-card-copy b{display:block;font-size:31px;letter-spacing:2.6px;margin-bottom:12px;font-weight:1000;text-shadow:0 4px 18px rgba(0,0,0,.42)}
+    .access-card-copy{position:absolute;z-index:4;left:32px;right:32px;bottom:34px;text-align:center;color:#fff}
+    .access-card-copy b{display:block;font-size:25px;letter-spacing:2.2px;margin-bottom:11px;font-weight:1000;text-shadow:0 4px 18px rgba(0,0,0,.42)}
     .access-card-copy .access-open{
       display:inline-flex;align-items:center;justify-content:center;padding:12px 20px;
       border-radius:999px;background:linear-gradient(135deg,#f56baa,#ce2a74);color:#fff;
@@ -763,9 +763,15 @@
       100%{transform:rotateY(-178deg);filter:brightness(.52)}
     }
     @media(max-width:760px){
-      .access-card{width:calc(100% - 28px);min-height:560px}
+      .access-card{width:min(430px,86vw);height:560px;min-height:560px}
       .access-card-copy{left:28px;right:28px;bottom:30px}
-      .access-card-copy b{font-size:23px}
+      .access-card-copy b{font-size:22px}
+    }
+
+
+    /* Card akses tegak: tinggi mengikuti card login */
+    @media(min-width:761px){
+      #loginAccessGate .access-card{height:640px!important;min-height:640px!important}
     }
 
 </style>
