@@ -655,6 +655,15 @@
     .settings-browse-btn{display:inline-flex;padding:10px 12px;border-radius:11px;background:#ffe6f0;color:#a92e64;font-size:12px;font-weight:900;cursor:pointer;border:1px solid #f2bdd5}
     .account-photo-row small,.settings-help{display:block;margin-top:6px;color:#a46e85;font-size:11px;line-height:1.5}
 
+
+    /* PERBAIKAN FOTO PROFIL & FOTO DASHBOARD */
+    .user-dot{overflow:hidden!important}
+    .user-dot img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;border-radius:50%!important}
+    .character-card img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important}
+    .settings-dashboard-row{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+    .settings-dashboard-preview{width:100px;height:128px;border-radius:16px;overflow:hidden;background:#ffe6f0;border:1px solid #f0bfd5;display:grid;place-items:center;color:#a64b75;font-size:11px;font-weight:900;flex:0 0 auto}
+    .settings-dashboard-preview img{width:100%;height:100%;object-fit:cover;display:block}
+
 </style>
 </head>
 <body>
@@ -800,12 +809,19 @@
         <button type="button" class="btn btn-soft" data-close="accountSettingsModal">X</button>
       </div>
       <div class="settings-section">
-        <h4>Profil Dashboard</h4>
+        <h4>Profil Akun</h4>
         <div class="account-photo-row">
           <div id="settingsProfilePreview" class="settings-profile-preview">N</div>
-          <div><label class="settings-browse-btn" for="settingsProfileFile">Pilih Foto Profil</label><input id="settingsProfileFile" type="file" accept="image/*" hidden><small>Foto ini dipakai pada menu akun dan halaman Dashboard Awal.</small></div>
+          <div><label class="settings-browse-btn" for="settingsProfileFile">Pilih Foto Profil</label><input id="settingsProfileFile" type="file" accept="image/*" hidden><small>Foto ini hanya dipakai pada icon profil di kanan atas.</small></div>
         </div>
         <div class="field"><label>Nama Profil</label><input id="settingsProfileName" maxlength="32" placeholder="Nama pemilik dashboard"></div>
+      </div>
+      <div class="settings-section">
+        <h4>Tampilan Dashboard Awal</h4>
+        <div class="settings-dashboard-row">
+          <div id="settingsDashboardPreview" class="settings-dashboard-preview">Foto Dashboard</div>
+          <div><label class="settings-browse-btn" for="settingsDashboardFile">Pilih Foto Dashboard</label><input id="settingsDashboardFile" type="file" accept="image/*" hidden><small>Foto ini tampil pada kartu gambar di halaman Dashboard Awal.</small></div>
+        </div>
       </div>
       <div class="settings-section">
         <h4>Ganti Password</h4>
@@ -1088,13 +1104,18 @@
       }
       await remove(ref(db, `dashboardndy30/images/${imageId}`));
     }
-    let dashboardSettings={profileName:"",profilePhoto:"",characterUrl:""};
+    let dashboardSettings={profileName:"",profilePhoto:"",dashboardPhoto:"",characterUrl:""};
     function initials(name){
       return String(name||"N").trim().split(/\s+/).map(x=>x[0]||"").join("").slice(0,2).toUpperCase()||"N";
     }
     function paintAvatar(el, name, photo){
       if(!el)return;
       el.innerHTML=photo?`<img src="${safe(photo)}" alt="Foto profil">`:initials(name);
+    }
+    function paintDashboardPreview(photo){
+      const el=$("#settingsDashboardPreview");
+      if(!el)return;
+      el.innerHTML=photo?`<img src="${safe(photo)}" alt="Foto dashboard">`:"Foto Dashboard";
     }
     function applyDashboardSettings(data={}){
       dashboardSettings={...dashboardSettings,...data};
@@ -1105,8 +1126,9 @@
       paintAvatar($("#userAvatar"),name,dashboardSettings.profilePhoto);
       paintAvatar($("#accountAvatarPreview"),name,dashboardSettings.profilePhoto);
       paintAvatar($("#settingsProfilePreview"),name,dashboardSettings.profilePhoto);
-      const photo=dashboardSettings.profilePhoto||dashboardSettings.characterUrl;
-      if(photo) $("#characterImage").src=photo;
+      paintDashboardPreview(dashboardSettings.dashboardPhoto||dashboardSettings.characterUrl||"");
+      const dashboardImage=dashboardSettings.dashboardPhoto||dashboardSettings.characterUrl;
+      if(dashboardImage) $("#characterImage").src=dashboardImage;
     }
     async function saveDashboardSettings(data){
       dashboardSettings={...dashboardSettings,...data};
@@ -1359,6 +1381,7 @@ $("#noteImageFile")?.addEventListener("change",async e=>{
 
 
     let pendingProfilePhoto="";
+    let pendingDashboardPhoto="";
     function closeAccountDropdown(){
       $("#accountDropdown")?.classList.remove("show");
       $("#accountMenuBtn")?.classList.remove("open");
@@ -1374,8 +1397,10 @@ $("#noteImageFile")?.addEventListener("change",async e=>{
       const fallback=currentUser?.email?.split("@")[0]||"Ndy30";
       $("#settingsProfileName").value=dashboardSettings.profileName||fallback;
       $("#settingsNewPassword").value="";$("#settingsConfirmPassword").value="";
-      pendingProfilePhoto="";
+      $("#settingsProfileFile").value="";$("#settingsDashboardFile").value="";
+      pendingProfilePhoto="";pendingDashboardPhoto="";
       paintAvatar($("#settingsProfilePreview"),dashboardSettings.profileName||fallback,dashboardSettings.profilePhoto);
+      paintDashboardPreview(dashboardSettings.dashboardPhoto||dashboardSettings.characterUrl||"");
       openModal("accountSettingsModal");
     });
     $("#settingsProfileFile")?.addEventListener("change",async e=>{
@@ -1385,6 +1410,14 @@ $("#noteImageFile")?.addEventListener("change",async e=>{
         paintAvatar($("#settingsProfilePreview"),$("#settingsProfileName").value,pendingProfilePhoto);
         toast("Foto profil siap disimpan.");
       }catch(err){console.error(err);toast("Gagal memproses foto profil.");}
+    });
+    $("#settingsDashboardFile")?.addEventListener("change",async e=>{
+      const file=e.target.files?.[0];if(!file)return;
+      try{
+        pendingDashboardPhoto=await compressImage(file);
+        paintDashboardPreview(pendingDashboardPhoto);
+        toast("Foto Dashboard Awal siap disimpan.");
+      }catch(err){console.error(err);toast("Gagal memproses foto dashboard.");}
     });
     $("#settingsProfileName")?.addEventListener("input",e=>{
       if(!pendingProfilePhoto) paintAvatar($("#settingsProfilePreview"),e.target.value,dashboardSettings.profilePhoto);
@@ -1400,7 +1433,11 @@ $("#noteImageFile")?.addEventListener("change",async e=>{
       const btn=e.submitter||$("#accountSettingsForm button[type='submit']");
       btn.disabled=true;
       try{
-        await saveDashboardSettings({profileName:name,profilePhoto:pendingProfilePhoto||dashboardSettings.profilePhoto||""});
+        await saveDashboardSettings({
+          profileName:name,
+          profilePhoto:pendingProfilePhoto||dashboardSettings.profilePhoto||"",
+          dashboardPhoto:pendingDashboardPhoto||dashboardSettings.dashboardPhoto||dashboardSettings.characterUrl||""
+        });
         if(pass && !previewMode) await updatePassword(currentUser,pass);
         closeModal("accountSettingsModal");
         toast(pass?"Profil dan password berhasil diperbarui.":"Pengaturan akun berhasil disimpan.");
