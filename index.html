@@ -147,9 +147,19 @@
     .page{display:none;animation:pageIn .35s ease}
     .page.active{display:block}
     @keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-    .ticker{overflow:hidden;white-space:nowrap;border:1px solid var(--pink-200);background:#fff;color:#c23972;border-radius:17px;margin-bottom:24px}
-    .ticker-track{display:inline-block;min-width:100%;padding:11px 0;font-size:11px;font-weight:950;letter-spacing:.8px;text-transform:uppercase;animation:ticker 26s linear infinite}
-    @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+    .ticker{
+      overflow:hidden;white-space:nowrap;border:1px solid var(--pink-200);background:#fff;color:#c23972;border-radius:17px;margin-bottom:24px;
+    }
+    .ticker-track{
+      display:inline-block;width:max-content;min-width:max-content;padding:11px 0;
+      font-size:11px;font-weight:950;letter-spacing:.8px;text-transform:uppercase;
+      will-change:transform;animation:ticker 30s linear infinite;
+    }
+    /* Mulai dari ujung kanan, bukan dari bagian tengah teks. */
+    @keyframes ticker{
+      from{transform:translateX(100vw)}
+      to{transform:translateX(-100%)}
+    }
     .hero{
       min-height:390px;border-radius:32px;overflow:hidden;position:relative;padding:44px;display:grid;grid-template-columns:1fr minmax(280px,390px);gap:28px;align-items:center;
       background:
@@ -1142,6 +1152,15 @@
 
     const $ = (s) => document.querySelector(s);
     const $$ = (s) => [...document.querySelectorAll(s)];
+
+    function resetTicker(){
+      const track = $(".ticker-track");
+      if(!track) return;
+      track.style.animation = "none";
+      void track.offsetWidth;
+      track.style.animation = "";
+    }
+    window.addEventListener("pageshow", resetTicker);
     let auth = null, db = null, currentUser = null, previewMode = false;
     let notes = [], predictions = [], images = [];
     let selectedPredictionId = null;
