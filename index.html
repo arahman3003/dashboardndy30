@@ -357,6 +357,37 @@
     @media(max-width:900px){.market-workspace{grid-template-columns:1fr}.market-list{max-height:280px}.market-workspace{min-height:0}.market-content{min-height:330px}}
     @media(max-width:640px){.market-shell{padding:14px;border-radius:22px}.market-top{flex-direction:column}.market-clock{width:100%}.market-controls{grid-template-columns:1fr}.market-summary{grid-template-columns:1fr}.market-top h1{font-size:23px}.market-result-head{align-items:flex-start;flex-direction:column}.market-content{padding:25px 16px}}
 
+
+    /* ===== GALERI GAMBAR — INPUT POPUP ===== */
+    #page-gambar{min-height:calc(100vh - 130px)}
+    .gallery-hero{
+      padding:24px;border-radius:27px;border:1px solid #f4cae0;
+      background:linear-gradient(135deg,#fff5fa 0%,#fff 54%,#ffddec 100%);
+      box-shadow:var(--shadow);display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap
+    }
+    .gallery-kicker{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;background:#ffe3ef;color:#b62d6b;font-size:10px;font-weight:950;letter-spacing:.7px}
+    .gallery-hero h1{font-size:29px;margin:10px 0 5px;color:#4a1b36}.gallery-hero p{margin:0;color:#98677f;font-size:13px}
+    .gallery-toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:16px 0}
+    .gallery-search{flex:1;min-width:240px;border:1px solid #f1c9da;border-radius:14px;background:#fff;padding:12px 14px;outline:0}
+    .gallery-search:focus{border-color:#e95f9e;box-shadow:0 0 0 4px rgba(233,77,145,.11)}
+    .gallery-count{padding:10px 12px;border-radius:999px;background:#fff;color:#a53667;border:1px solid #f4c7da;font-size:11px;font-weight:900}
+    .gallery{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))!important;gap:15px!important}
+    .gallery-card{border-radius:19px!important;overflow:hidden!important;border:1px solid #f1cbdc!important;box-shadow:0 12px 26px rgba(116,28,70,.10)!important;transition:.2s}
+    .gallery-card:hover{transform:translateY(-4px);box-shadow:0 18px 34px rgba(116,28,70,.15)!important}
+    .gallery-card img{height:210px!important;object-fit:cover!important;background:#ffe8f2}
+    .gallery-body{padding:12px 12px 13px!important}.gallery-body b{color:#55213f;font-size:13px!important;text-transform:uppercase;letter-spacing:.15px}
+    .gallery-meta{border-top:1px solid #f5d5e2;padding-top:10px}
+    .gallery-modal-box{width:min(560px,100%);border:1px solid #f2c2d8!important}
+    .upload-divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:#aa6b87;font-size:10px;font-weight:950;letter-spacing:.7px;text-transform:uppercase}
+    .upload-divider:before,.upload-divider:after{content:"";height:1px;background:#f3d3e0;flex:1}
+    .upload-file{display:block;width:100%;border:1px solid #f1c7da;border-radius:14px;background:#fff;padding:10px;color:#80425f}
+    .upload-help{font-size:11px;line-height:1.55;color:#a46d85;margin:8px 0 0}
+    .image-preview{height:190px;margin-top:14px;border:1px dashed #efb8d0;border-radius:16px;overflow:hidden;background:#fff8fb;display:grid;place-items:center;color:#a66c87;font-size:12px;font-weight:800}
+    .image-preview img{width:100%;height:100%;object-fit:contain;display:block;background:#fff}
+    .character-panel{margin-top:16px;padding:15px;border-radius:18px;background:#fff;border:1px solid #f3d1e0;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .character-panel input{flex:1;min-width:220px;border:1px solid #f1c8da;border-radius:13px;padding:12px}
+    @media(max-width:640px){.gallery-hero{padding:19px}.gallery-hero h1{font-size:24px}.gallery-toolbar{align-items:stretch}.gallery-search{min-width:100%}.gallery-toolbar .btn{flex:1}.image-preview{height:160px}}
+
 </style>
 </head>
 <body>
@@ -469,13 +500,20 @@
           </div>
         </section>
 
-        <section id="page-gambar class="page">
-          <div class="board-top"><div><h1>Gambar</h1><p>Simpan koleksi gambar dari link. Foto karakter dashboard juga dapat diganti dari sini.</p></div></div>
-          <div class="panel">
-            <div class="image-form"><input id="imageTitle" placeholder="Nama gambar"><input id="imageUrl" placeholder="Link gambar (https://...)"><button id="addImageBtn" class="btn btn-pink">Tambah Gambar</button></div>
-            <div class="image-form"><input id="characterUrl" placeholder="Link foto karakter pemilik dashboard"><button id="saveCharacterBtn" class="btn btn-soft">Simpan Foto Karakter</button></div>
+        <section id="page-gambar" class="page">
+          <div class="gallery-hero">
+            <div><span class="gallery-kicker">▣ KOLEKSI GAMBAR</span><h1>Gambar</h1><p>Simpan screenshot, Imgur, atau gambar dari perangkat dalam koleksi Dashboardndy30.</p></div>
+            <button id="openImageModalBtn" class="btn btn-pink">＋ Input Gambar</button>
           </div>
-          <div id="gallery" class="gallery" style="margin-top:18px"></div>
+          <div class="gallery-toolbar">
+            <input id="gallerySearch" class="gallery-search" placeholder="Cari judul gambar...">
+            <span id="galleryCount" class="gallery-count">0 GAMBAR</span>
+          </div>
+          <div id="gallery" class="gallery"></div>
+          <div class="character-panel">
+            <input id="characterUrl" placeholder="Link foto karakter pemilik dashboard">
+            <button id="saveCharacterBtn" class="btn btn-soft">Simpan Foto Karakter</button>
+          </div>
         </section>
       </section>
     </div>
@@ -499,6 +537,23 @@
       <div class="field"><label>Pasaran</label><select id="predictionMarket" required></select></div>
       <div class="field"><label>Isi / hasil prediksi</label><textarea id="predictionContent" required rows="9" placeholder="Tulis hasil prediksi pasaran di sini..."></textarea></div>
       <div class="modal-actions"><button type="button" class="btn btn-soft" data-close="predictionModal">Batal</button><button class="btn btn-pink" type="submit">Simpan Prediksi</button></div>
+    </form>
+  </div>
+
+  <div id="imageModal" class="modal">
+    <form id="imageForm" class="modal-box gallery-modal-box">
+      <div class="modal-actions" style="justify-content:space-between;margin:0 0 12px">
+        <h3 id="imageModalHeading" style="margin:0">Input Gambar Baru</h3>
+        <button type="button" class="btn btn-soft" data-close="imageModal">✕</button>
+      </div>
+      <input id="imageId" type="hidden">
+      <div class="field"><label>Judul Gambar</label><input id="imageTitle" required placeholder="Contoh: Screenshot Pembayaran"></div>
+      <div class="field"><label>Link Gambar Screenshot / Imgur</label><input id="imageUrl" placeholder="https://i.imgur.com/contoh.jpg"></div>
+      <div class="upload-divider">atau</div>
+      <div class="field"><label>Pilih Gambar dari File</label><input id="imageFile" class="upload-file" type="file" accept="image/*"></div>
+      <p class="upload-help">File akan diperkecil otomatis sebelum disimpan agar lebih ringan. Untuk gambar besar, link Imgur tetap lebih disarankan.</p>
+      <div id="imagePreview" class="image-preview">Preview gambar akan tampil di sini</div>
+      <div class="modal-actions"><button type="button" class="btn btn-soft" data-close="imageModal">Batal</button><button type="submit" class="btn btn-pink">Simpan Gambar</button></div>
     </form>
   </div>
 
@@ -599,12 +654,18 @@
 
     function imageCard(g){
       const url=safe(g.url);
-      return `<article class="gallery-card">
-        <img src="${url}" alt="${safe(g.title)}" onerror="this.outerHTML='<div class=&quot;placeholder-img&quot; style=&quot;height:195px&quot;>Gambar tidak dapat dimuat</div>'">
-        <div class="gallery-body"><b>${safe(g.title)}</b><div class="gallery-meta"><small>koleksi gambar</small><button class="mini" data-delete-image="${g.id}">Hapus</button></div></div>
+      return `<article class="gallery-card" data-gallery-card="${safe(g.id)}">
+        <img src="${url}" alt="${safe(g.title)}" onerror="this.outerHTML='<div class=&quot;placeholder-img&quot; style=&quot;height:210px&quot;>Gambar tidak dapat dimuat</div>'">
+        <div class="gallery-body"><b>${safe(g.title)}</b><div class="gallery-meta"><small>${g.createdAt?new Date(g.createdAt).toLocaleString("id-ID"):"koleksi gambar"}</small><span><button class="mini" data-edit-image="${safe(g.id)}">Edit</button> <button class="mini" data-delete-image="${safe(g.id)}">Hapus</button></span></div></div>
       </article>`;
     }
-    function renderImages(){ $("#gallery").innerHTML=images.length?images.map(imageCard).join(""):`<div class="empty">Belum ada gambar tersimpan.</div>`; updateStats(); }
+    function renderImages(){
+      const search=($("#gallerySearch")?.value||"").toLowerCase().trim();
+      const shown=images.filter(g=>!search||String(g.title||"").toLowerCase().includes(search));
+      $("#gallery").innerHTML=shown.length?shown.map(imageCard).join(""):`<div class="empty">Belum ada gambar yang cocok.</div>`;
+      $("#galleryCount").textContent=`${images.length} GAMBAR`;
+      updateStats();
+    }
 
     function renderAll(){renderNotes();renderPredictions();renderImages();}
     function openModal(id){$("#"+id).classList.add("show")}
@@ -769,19 +830,7 @@
         submitBtn.disabled = false;
       }
     });
-$("#addImageBtn").addEventListener("click",async()=>{
-      let title=$("#imageTitle").value.trim(),url=$("#imageUrl").value.trim();
-      if(!title||!url){toast("Isi nama dan link gambar dahulu.");return;}
-      try{
-        await saveImage({title,url});
-        $("#imageTitle").value="";$("#imageUrl").value="";
-        toast("Gambar ditambahkan.");
-      }catch(err){
-        console.error("Gagal menyimpan gambar:", err);
-        toast("Gagal menyimpan gambar. Cek koneksi atau Rules.");
-      }
-    });
-    $("#saveCharacterBtn").addEventListener("click",async()=>{
+$("#saveCharacterBtn").addEventListener("click",async()=>{
       const url=$("#characterUrl").value.trim();
       if(!url){toast("Masukkan link foto karakter.");return;}
       try{
@@ -795,12 +844,77 @@ $("#addImageBtn").addEventListener("click",async()=>{
     });
     $$("[data-close]").forEach(b=>b.addEventListener("click",()=>closeModal(b.dataset.close)));
 
+
+    let selectedImageDataUrl = "";
+    function resetImageForm(){
+      $("#imageForm").reset(); $("#imageId").value=""; selectedImageDataUrl="";
+      $("#imagePreview").textContent="Preview gambar akan tampil di sini";
+      $("#imageModalHeading").textContent="Input Gambar Baru";
+    }
+    function openImageEditor(imageId=""){
+      resetImageForm();
+      if(imageId){
+        const item=images.find(x=>x.id===imageId); if(!item) return;
+        $("#imageId").value=item.id; $("#imageTitle").value=item.title||""; $("#imageUrl").value=item.url||"";
+        $("#imageModalHeading").textContent="Edit Gambar";
+        $("#imagePreview").innerHTML=`<img src="${safe(item.url)}" alt="Preview">`;
+      }
+      openModal("imageModal");
+    }
+    function showImagePreview(url){
+      if(!url){$("#imagePreview").textContent="Preview gambar akan tampil di sini";return;}
+      $("#imagePreview").innerHTML=`<img src="${safe(url)}" alt="Preview gambar">`;
+    }
+    function compressImage(file){
+      return new Promise((resolve,reject)=>{
+        const reader=new FileReader();
+        reader.onerror=()=>reject(new Error("Gagal membaca file gambar."));
+        reader.onload=()=>{
+          const img=new Image();
+          img.onerror=()=>reject(new Error("File bukan gambar yang valid."));
+          img.onload=()=>{
+            const max=1000; let w=img.width,h=img.height;
+            if(w>max||h>max){const r=Math.min(max/w,max/h);w=Math.round(w*r);h=Math.round(h*r);}
+            const canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
+            canvas.getContext("2d").drawImage(img,0,0,w,h);
+            resolve(canvas.toDataURL("image/jpeg",.78));
+          };
+          img.src=reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+    $("#openImageModalBtn")?.addEventListener("click",()=>openImageEditor());
+    $("#gallerySearch")?.addEventListener("input",renderImages);
+    $("#imageUrl")?.addEventListener("input",e=>{if(e.target.value.trim()){selectedImageDataUrl="";showImagePreview(e.target.value.trim());}});
+    $("#imageFile")?.addEventListener("change",async e=>{
+      const file=e.target.files?.[0]; if(!file)return;
+      try{selectedImageDataUrl=await compressImage(file);$("#imageUrl").value="";showImagePreview(selectedImageDataUrl);toast("File siap disimpan.");}
+      catch(err){console.error(err);toast("Gagal memproses file gambar.");}
+    });
+    $("#imageForm")?.addEventListener("submit",async e=>{
+      e.preventDefault();
+      const btn=e.submitter||$("#imageForm button[type='submit']");
+      const title=$("#imageTitle").value.trim(), url=selectedImageDataUrl||$("#imageUrl").value.trim(), imageId=$("#imageId").value;
+      if(!title||!url){toast("Isi judul dan pilih file atau masukkan link gambar.");return;}
+      btn.disabled=true;
+      try{
+        if(imageId){
+          if(previewMode){images=images.map(x=>x.id===imageId?{...x,title,url,updatedAt:Date.now()}:x);localSet("ndy30Images",images);renderImages();}
+          else await update(ref(db,`dashboardndy30/images/${imageId}`),{title,url,updatedAt:Date.now()});
+        }else await saveImage({title,url});
+        closeModal("imageModal");renderImages();toast("Gambar tersimpan.");
+      }catch(err){console.error(err);toast("Gagal menyimpan gambar. Coba pakai link Imgur atau file lebih kecil.");}
+      finally{btn.disabled=false;}
+    });
+
     document.addEventListener("click",async(e)=>{
       const edit=e.target.closest("[data-edit-note]"); if(edit){const n=notes.find(x=>x.id===edit.dataset.editNote);if(!n)return;$("#noteId").value=n.id;$("#noteTitle").value=n.title;$("#noteContent").value=n.content;$("#noteColor").value=n.color||"pink";$("#noteModalTitle").textContent="Edit Catatan";openModal("noteModal");}
       const del=e.target.closest("[data-delete-note]");if(del) await removeNote(del.dataset.deleteNote);
       const sel=e.target.closest("[data-select-prediction]");if(sel){selectedPredictionId=sel.dataset.selectPrediction;renderPredictions();}
       const dp=e.target.closest("#deleteSelectedPrediction");if(dp&&selectedPredictionId)await removePrediction(selectedPredictionId);
       const cp=e.target.closest("#copyPrediction");if(cp){const p=predictions.find(x=>x.id===selectedPredictionId);if(p){await navigator.clipboard.writeText(`${p.title}\n\n${p.content}`);toast("Isi data sudah disalin.");}}
+      const ei=e.target.closest("[data-edit-image]");if(ei)openImageEditor(ei.dataset.editImage);
       const di=e.target.closest("[data-delete-image]");if(di)await removeImage(di.dataset.deleteImage);
     });
 
