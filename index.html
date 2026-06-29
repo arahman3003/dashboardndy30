@@ -704,7 +704,11 @@
 
     /* Dashboard Awal: hanya sapaan */
     .hero-name-only h1{margin:0!important}
-    </style>
+    
+    /* LOGIN TANPA TOMBOL PREVIEW */
+    .login-form .btn.btn-pink{margin-top:18px}
+
+</style>
 
   <script>
     (function(){
@@ -742,9 +746,7 @@
           <div class="field"><label>Username</label><input id="loginUsername" autocomplete="username" placeholder="Masukkan username" required></div>
           <div class="field"><label>Password</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Masukkan password" required></div>
           <button class="btn btn-pink" type="submit">Masuk ke Dashboard <span>→</span></button>
-          <button id="previewBtn" class="btn btn-soft preview-link" type="button">Lihat Preview Desain</button>
           <div id="loginError" class="login-error"></div>
-          <div class="login-hint">Firebase belum disambungkan? Tekan “Lihat Preview Desain” untuk melihat tampilan awal.</div>
         </form>
       </div>
     </div>
@@ -1277,7 +1279,6 @@
         await signInWithEmailAndPassword(auth,usernameToEmail($("#loginUsername").value),$("#loginPassword").value);
       }catch(err){$("#loginError").textContent="Login gagal. Periksa username dan password di Firebase.";}
     });
-    $("#previewBtn").addEventListener("click",()=>{previewMode=true;$("#userNameLabel").textContent="Preview Mode";setAppVisible(true);loadPreviewData();toast("Mode preview aktif. Data disimpan di browser ini.");});
     $("#logoutBtn").addEventListener("click",async()=>{if(previewMode){previewMode=false;setAppVisible(false);return;}await signOut(auth);});
     $("#hamburger").addEventListener("click",()=>$("#sidebar").classList.toggle("open"));
     $$(".nav-btn").forEach(b=>b.addEventListener("click",()=>switchPage(b.dataset.page)));
