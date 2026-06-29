@@ -636,6 +636,25 @@
       border-radius:13px!important;
     }
 
+
+    /* ===== PENGATURAN AKUN ===== */
+    .account-menu-wrap{position:relative}
+    .account-menu-btn{border:0;cursor:pointer}
+    .account-arrow{font-size:13px;color:#a33d6d;transition:.18s}.account-menu-btn.open .account-arrow{transform:rotate(180deg)}
+    .account-dropdown{position:absolute;right:0;top:calc(100% + 10px);width:255px;display:none;padding:10px;border:1px solid #f0c5d8;border-radius:18px;background:#fff;box-shadow:0 18px 42px rgba(103,24,65,.18);z-index:100}
+    .account-dropdown.show{display:block;animation:dropIn .18s ease}@keyframes dropIn{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:none}}
+    .account-dropdown-head{display:flex;align-items:center;gap:10px;padding:9px 8px 13px;border-bottom:1px solid #f5d7e4;margin-bottom:7px}
+    .account-avatar-lg,.settings-profile-preview{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;overflow:hidden;color:#fff;background:linear-gradient(135deg,#f36fa9,#a61f5d);font-weight:950}
+    .account-avatar-lg img,.settings-profile-preview img{width:100%;height:100%;object-fit:cover}
+    .account-dropdown-head b{display:block;font-size:13px;color:#57203e}.account-dropdown-head small{display:block;margin-top:3px;font-size:10px;color:#a46d85}
+    .account-dropdown button{display:block;width:100%;padding:11px 10px;border:0;border-radius:11px;background:transparent;text-align:left;color:#6a274c;font-weight:900;font-size:12px;cursor:pointer}
+    .account-dropdown button:hover{background:#fff0f6}.account-dropdown #logoutBtn{color:#c23e72}
+    .account-settings-box{max-width:560px!important}
+    .settings-section{padding:15px 0;border-bottom:1px solid #f2d7e3}.settings-section:last-of-type{border-bottom:0}.settings-section h4{margin:0 0 12px;font-size:14px;color:#68254b}
+    .account-photo-row{display:flex;align-items:center;gap:14px;margin-bottom:14px}.settings-profile-preview{width:62px;height:62px;font-size:22px;flex:0 0 auto}
+    .settings-browse-btn{display:inline-flex;padding:10px 12px;border-radius:11px;background:#ffe6f0;color:#a92e64;font-size:12px;font-weight:900;cursor:pointer;border:1px solid #f2bdd5}
+    .account-photo-row small,.settings-help{display:block;margin-top:6px;color:#a46e85;font-size:11px;line-height:1.5}
+
 </style>
 </head>
 <body>
@@ -667,7 +686,18 @@
   <main id="app" class="hidden">
     <header class="topbar">
       <div class="top-brand"><button id="hamburger" class="hamburger" aria-label="Buka menu">☰</button><div class="logo-mark">✦</div><div>Dashboardndy30<small>Private workspace</small></div></div>
-      <div class="top-actions"><div class="user-chip"><span class="user-dot">N</span><span id="userNameLabel">Ndy30</span></div><button id="logoutBtn" class="btn btn-soft">Keluar</button></div>
+      <div class="top-actions">
+        <div class="account-menu-wrap">
+          <button id="accountMenuBtn" class="user-chip account-menu-btn" type="button" aria-expanded="false">
+            <span id="userAvatar" class="user-dot">N</span><span id="userNameLabel">Ndy30</span><span class="account-arrow">⌄</span>
+          </button>
+          <div id="accountDropdown" class="account-dropdown">
+            <div class="account-dropdown-head"><span id="accountAvatarPreview" class="account-avatar-lg">N</span><div><b id="accountNamePreview">Ndy30</b><small>Private workspace</small></div></div>
+            <button id="openAccountSettings" type="button">⚙ Pengaturan Akun</button>
+            <button id="logoutBtn" type="button">↪ Logout</button>
+          </div>
+        </div>
+      </div>
     </header>
 
     <div class="shell">
@@ -758,14 +788,34 @@
             <span id="galleryCount" class="gallery-count">0 GAMBAR</span>
           </div>
           <div id="gallery" class="gallery"></div>
-          <div class="character-panel">
-            <input id="characterUrl" placeholder="Link foto karakter pemilik dashboard">
-            <button id="saveCharacterBtn" class="btn btn-soft">Simpan Foto Karakter</button>
-          </div>
-        </section>
+</section>
       </section>
     </div>
   </main>
+
+  <div id="accountSettingsModal" class="modal">
+    <form id="accountSettingsForm" class="modal-box account-settings-box">
+      <div class="modal-actions" style="justify-content:space-between;margin:0 0 12px">
+        <h3 style="margin:0">Pengaturan Akun</h3>
+        <button type="button" class="btn btn-soft" data-close="accountSettingsModal">X</button>
+      </div>
+      <div class="settings-section">
+        <h4>Profil Dashboard</h4>
+        <div class="account-photo-row">
+          <div id="settingsProfilePreview" class="settings-profile-preview">N</div>
+          <div><label class="settings-browse-btn" for="settingsProfileFile">Pilih Foto Profil</label><input id="settingsProfileFile" type="file" accept="image/*" hidden><small>Foto ini dipakai pada menu akun dan halaman Dashboard Awal.</small></div>
+        </div>
+        <div class="field"><label>Nama Profil</label><input id="settingsProfileName" maxlength="32" placeholder="Nama pemilik dashboard"></div>
+      </div>
+      <div class="settings-section">
+        <h4>Ganti Password</h4>
+        <div class="field"><label>Password baru</label><input id="settingsNewPassword" type="password" minlength="6" placeholder="Minimal 6 karakter"></div>
+        <div class="field"><label>Konfirmasi password baru</label><input id="settingsConfirmPassword" type="password" minlength="6" placeholder="Ulangi password baru"></div>
+        <small class="settings-help">Kosongkan bagian password bila hanya ingin menyimpan nama atau foto profil.</small>
+      </div>
+      <div class="modal-actions"><button type="button" class="btn btn-soft" data-close="accountSettingsModal">Batal</button><button class="btn btn-pink" type="submit">Simpan Pengaturan</button></div>
+    </form>
+  </div>
 
   <div id="noteModal" class="modal">
     <form id="noteForm" class="modal-box">
@@ -848,7 +898,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
     import { getDatabase, ref, push, set, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
     /* ==========================================================
@@ -1038,19 +1088,40 @@
       }
       await remove(ref(db, `dashboardndy30/images/${imageId}`));
     }
-    async function saveCharacter(url){
+    let dashboardSettings={profileName:"",profilePhoto:"",characterUrl:""};
+    function initials(name){
+      return String(name||"N").trim().split(/\s+/).map(x=>x[0]||"").join("").slice(0,2).toUpperCase()||"N";
+    }
+    function paintAvatar(el, name, photo){
+      if(!el)return;
+      el.innerHTML=photo?`<img src="${safe(photo)}" alt="Foto profil">`:initials(name);
+    }
+    function applyDashboardSettings(data={}){
+      dashboardSettings={...dashboardSettings,...data};
+      const fallback=currentUser?.email?.split("@")[0]||"Ndy30";
+      const name=dashboardSettings.profileName||fallback;
+      $("#userNameLabel").textContent=name;
+      $("#accountNamePreview").textContent=name;
+      paintAvatar($("#userAvatar"),name,dashboardSettings.profilePhoto);
+      paintAvatar($("#accountAvatarPreview"),name,dashboardSettings.profilePhoto);
+      paintAvatar($("#settingsProfilePreview"),name,dashboardSettings.profilePhoto);
+      const photo=dashboardSettings.profilePhoto||dashboardSettings.characterUrl;
+      if(photo) $("#characterImage").src=photo;
+    }
+    async function saveDashboardSettings(data){
+      dashboardSettings={...dashboardSettings,...data};
       if(previewMode){
-        const s = localSettings(); s.characterUrl = url; saveLocalSettings(s);
-        $("#characterImage").src = url; toast("Foto karakter disimpan."); return;
+        const s=localSettings();Object.assign(s,dashboardSettings);saveLocalSettings(s);applyDashboardSettings(dashboardSettings);return;
       }
-      await update(ref(db, "dashboardndy30/settings"), {characterUrl:url});
+      await update(ref(db,"dashboardndy30/settings"),dashboardSettings);
+      applyDashboardSettings(dashboardSettings);
     }
 
     function loadPreviewData(){
       notes=localGet("ndy30Notes");
       predictions=localGet("ndy30Predictions");
       images=localGet("ndy30Images");
-      const s=localSettings(); if(s.characterUrl) $("#characterImage").src=s.characterUrl;
+      const s=localSettings(); applyDashboardSettings(s);
       renderAll();
     }
 
@@ -1084,15 +1155,14 @@
       });
 
       onValue(ref(db, "dashboardndy30/settings"), snap => {
-        const data = snap.val();
-        if(data && data.characterUrl) $("#characterImage").src = data.characterUrl;
+        applyDashboardSettings(snap.val()||{});
       });
 
       onAuthStateChanged(auth, user => {
         if(user){
           currentUser = user;
           previewMode = false;
-          $("#userNameLabel").textContent = user.email.split("@")[0];
+          applyDashboardSettings(dashboardSettings);
           setAppVisible(true);
         } else if(!previewMode){
           setAppVisible(false);
@@ -1144,19 +1214,7 @@
       }catch(err){console.error(err);toast("Gagal menyimpan catatan. Cek koneksi atau Rules.");}
       finally{submitBtn.disabled=false;}
     });
-$("#saveCharacterBtn").addEventListener("click",async()=>{
-      const url=$("#characterUrl").value.trim();
-      if(!url){toast("Masukkan link foto karakter.");return;}
-      try{
-        await saveCharacter(url);
-        $("#characterUrl").value="";
-        toast("Foto karakter disimpan.");
-      }catch(err){
-        console.error("Gagal menyimpan foto karakter:", err);
-        toast("Gagal menyimpan foto. Cek koneksi atau Rules.");
-      }
-    });
-    $$("[data-close]").forEach(b=>b.addEventListener("click",()=>closeModal(b.dataset.close)));
+$$("[data-close]").forEach(b=>b.addEventListener("click",()=>closeModal(b.dataset.close)));
 
 
     let selectedImageDataUrl = "";
@@ -1297,6 +1355,63 @@ $("#noteImageFile")?.addEventListener("change",async e=>{
         toast("Gambar catatan diperbarui.");
       }catch(err){console.error(err);toast("Gagal menyimpan gambar catatan.");}
       finally{btn.disabled=false;}
+    });
+
+
+    let pendingProfilePhoto="";
+    function closeAccountDropdown(){
+      $("#accountDropdown")?.classList.remove("show");
+      $("#accountMenuBtn")?.classList.remove("open");
+      $("#accountMenuBtn")?.setAttribute("aria-expanded","false");
+    }
+    $("#accountMenuBtn")?.addEventListener("click",e=>{
+      e.stopPropagation();
+      const dropdown=$("#accountDropdown"),open=!dropdown.classList.contains("show");
+      dropdown.classList.toggle("show",open);$("#accountMenuBtn").classList.toggle("open",open);$("#accountMenuBtn").setAttribute("aria-expanded",String(open));
+    });
+    $("#openAccountSettings")?.addEventListener("click",()=>{
+      closeAccountDropdown();
+      const fallback=currentUser?.email?.split("@")[0]||"Ndy30";
+      $("#settingsProfileName").value=dashboardSettings.profileName||fallback;
+      $("#settingsNewPassword").value="";$("#settingsConfirmPassword").value="";
+      pendingProfilePhoto="";
+      paintAvatar($("#settingsProfilePreview"),dashboardSettings.profileName||fallback,dashboardSettings.profilePhoto);
+      openModal("accountSettingsModal");
+    });
+    $("#settingsProfileFile")?.addEventListener("change",async e=>{
+      const file=e.target.files?.[0];if(!file)return;
+      try{
+        pendingProfilePhoto=await compressImage(file);
+        paintAvatar($("#settingsProfilePreview"),$("#settingsProfileName").value,pendingProfilePhoto);
+        toast("Foto profil siap disimpan.");
+      }catch(err){console.error(err);toast("Gagal memproses foto profil.");}
+    });
+    $("#settingsProfileName")?.addEventListener("input",e=>{
+      if(!pendingProfilePhoto) paintAvatar($("#settingsProfilePreview"),e.target.value,dashboardSettings.profilePhoto);
+    });
+    $("#accountSettingsForm")?.addEventListener("submit",async e=>{
+      e.preventDefault();
+      const name=$("#settingsProfileName").value.trim()||currentUser?.email?.split("@")[0]||"Ndy30";
+      const pass=$("#settingsNewPassword").value,confirm=$("#settingsConfirmPassword").value;
+      if(pass||confirm){
+        if(pass.length<6){toast("Password baru minimal 6 karakter.");return;}
+        if(pass!==confirm){toast("Konfirmasi password tidak sama.");return;}
+      }
+      const btn=e.submitter||$("#accountSettingsForm button[type='submit']");
+      btn.disabled=true;
+      try{
+        await saveDashboardSettings({profileName:name,profilePhoto:pendingProfilePhoto||dashboardSettings.profilePhoto||""});
+        if(pass && !previewMode) await updatePassword(currentUser,pass);
+        closeModal("accountSettingsModal");
+        toast(pass?"Profil dan password berhasil diperbarui.":"Pengaturan akun berhasil disimpan.");
+      }catch(err){
+        console.error(err);
+        if(err?.code==="auth/requires-recent-login") toast("Silakan logout lalu login kembali sebelum mengganti password.");
+        else toast("Gagal menyimpan pengaturan akun.");
+      }finally{btn.disabled=false;}
+    });
+    document.addEventListener("click",e=>{
+      if(!e.target.closest(".account-menu-wrap")) closeAccountDropdown();
     });
 
     document.addEventListener("click",async(e)=>{
@@ -1477,21 +1592,16 @@ $("#noteImageFile")?.addEventListener("change",async e=>{
 
 
 
-    /* Tutup semua popup dashboard: klik area luar, ESC, dan berlaku juga untuk popup yang ditambahkan nanti */
     document.addEventListener("click",e=>{
       const overlay=e.target.closest(".modal, .modal-overlay, .domain-modal, .pkcs-modal");
-      if(!overlay) return;
-      if(e.target===overlay){
-        overlay.classList.remove("show");
-      }
+      if(overlay && e.target===overlay) overlay.classList.remove("show");
     });
     document.addEventListener("keydown",e=>{
       if(e.key==="Escape"){
-        document.querySelectorAll(".modal.show, .modal-overlay.show, .domain-modal.show, .pkcs-modal.show")
-          .forEach(overlay=>overlay.classList.remove("show"));
+        document.querySelectorAll(".modal.show, .modal-overlay.show, .domain-modal.show, .pkcs-modal.show").forEach(x=>x.classList.remove("show"));
+        closeAccountDropdown();
       }
     });
-
 
     if(FIREBASE_READY) startFirebase();
   </script>
