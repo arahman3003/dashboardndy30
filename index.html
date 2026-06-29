@@ -219,7 +219,7 @@
       .login-card{grid-template-columns:1fr}.login-visual{min-height:250px}.login-form-wrap{padding:40px 30px}
       .shell{grid-template-columns:1fr}.sidebar{position:fixed;z-index:60;left:0;top:76px;width:270px;transform:translateX(-105%);transition:.26s;height:calc(100vh - 76px);box-shadow:20px 0 50px rgba(58,9,37,.18)}.sidebar.open{transform:none}.hamburger{display:grid;place-items:center}.content{padding:22px}.hero{grid-template-columns:1fr;min-height:auto}.character-stage{height:260px}.cards{grid-template-columns:1fr 1fr}.predict-layout{grid-template-columns:1fr}.prediction-list{max-height:230px}
     }
-    @media(max-width:640px){.access-card.opening{animation-duration:.82s}#authScreen.show-login .login-card{animation-duration:.82s}
+    @media(max-width:640px){
       #authScreen{padding:14px}.login-card{border-radius:25px}.login-visual{padding:30px}.login-form-wrap{padding:31px 22px}.topbar{padding:0 14px}.top-actions .user-chip{display:none}.content{padding:16px}.hero{padding:25px;border-radius:25px}.hero h1{font-size:40px}.grid-stats,.cards{grid-template-columns:1fr}.section-head{align-items:flex-start;flex-direction:column}.board-top{align-items:flex-start;flex-direction:column}.search{width:100%;min-width:0}.toolbar{width:100%}.toolbar .btn{flex:1}.note-grid{columns:1}.ticker{border-radius:13px}.character-card{height:245px;width:188px}
     }
   
@@ -711,9 +711,9 @@
 
 
     /* HALAMAN AKSES AWAL — KLIK DULU BARU FORM LOGIN */
-    /* BUKA HALAMAN BUKU — COVER BERPUTAR DARI JILID KIRI */
+    /* CARD AKSES SEUKURAN LOGIN — COVER BUKU TERBUKA */
     #loginAccessGate{
-      position:absolute;inset:0;z-index:8;display:grid;place-items:center;perspective:2400px;
+      position:absolute;inset:0;z-index:8;display:grid;place-items:center;perspective:2600px;
       background:
         radial-gradient(circle at 18% 15%,rgba(255,255,255,.3),transparent 28%),
         linear-gradient(145deg,rgba(88,20,56,.28),rgba(239,105,162,.18));
@@ -721,43 +721,51 @@
     }
     #loginAccessGate.hidden{visibility:hidden;pointer-events:none}
     .access-card{
-      width:min(310px,82vw);min-height:450px;overflow:hidden;border-radius:27px;
-      border:1px solid rgba(255,255,255,.42);background:#381529;
-      box-shadow:0 30px 78px rgba(62,11,39,.42);cursor:pointer;position:relative;
+      width:min(100%,1040px);min-height:640px;overflow:hidden;border-radius:34px;
+      border:1px solid rgba(255,255,255,.55);background:#381529;
+      box-shadow:0 34px 90px rgba(104,31,69,.28);cursor:pointer;position:relative;
       transform:rotateY(0deg);transition:.24s ease;transform-origin:left center;
       transform-style:preserve-3d;will-change:transform;backface-visibility:hidden;
     }
-    .access-card:hover{transform:translateY(-6px) scale(1.015);box-shadow:0 38px 92px rgba(62,11,39,.48)}
-    .access-card.opening{animation:bookCoverOpen 1.05s cubic-bezier(.15,.8,.15,1) forwards;pointer-events:none}
-    .access-card img{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;display:block;filter:brightness(.9)}
+    .access-card:hover{transform:translateY(-5px) scale(1.006);box-shadow:0 42px 98px rgba(104,31,69,.34)}
+    .access-card.opening{animation:bookCoverOpen 1.18s cubic-bezier(.18,.82,.16,1) forwards;pointer-events:none}
+    .access-card img{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;display:block;filter:brightness(.82)}
     .access-card::before{
-      content:"";position:absolute;left:0;top:0;bottom:0;width:18px;z-index:3;
-      background:linear-gradient(90deg,rgba(21,3,14,.58),rgba(255,255,255,.17),rgba(0,0,0,0));
-      box-shadow:7px 0 14px rgba(0,0,0,.22)
+      content:"";position:absolute;left:0;top:0;bottom:0;width:24px;z-index:3;
+      background:linear-gradient(90deg,rgba(20,3,14,.68),rgba(255,255,255,.2),rgba(0,0,0,0));
+      box-shadow:10px 0 20px rgba(0,0,0,.23)
     }
-    .access-card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(29,6,22,.82) 100%)}
-    .access-card-copy{position:absolute;z-index:4;left:22px;right:22px;bottom:24px;text-align:center;color:#fff}
-    .access-card-copy b{display:block;font-size:19px;letter-spacing:2px;margin-bottom:8px;font-weight:1000;text-shadow:0 4px 18px rgba(0,0,0,.38)}
+    .access-card::after{
+      content:"";position:absolute;inset:0;
+      background:linear-gradient(90deg,rgba(45,8,29,.12),transparent 44%),linear-gradient(180deg,transparent 53%,rgba(29,6,22,.76) 100%)
+    }
+    .access-card-copy{position:absolute;z-index:4;left:48px;right:48px;bottom:42px;text-align:left;color:#fff}
+    .access-card-copy b{display:block;font-size:31px;letter-spacing:2.6px;margin-bottom:12px;font-weight:1000;text-shadow:0 4px 18px rgba(0,0,0,.42)}
     .access-card-copy .access-open{
-      display:inline-flex;margin-top:6px;align-items:center;justify-content:center;padding:10px 16px;
+      display:inline-flex;align-items:center;justify-content:center;padding:12px 20px;
       border-radius:999px;background:linear-gradient(135deg,#f56baa,#ce2a74);color:#fff;
-      font-weight:950;font-size:11px;letter-spacing:.45px;box-shadow:0 10px 24px rgba(216,41,113,.34)
+      font-weight:950;font-size:12px;letter-spacing:.5px;box-shadow:0 10px 24px rgba(216,41,113,.34)
     }
     #authScreen.show-login .login-card{
-      animation:bookPagesReveal 1.05s cubic-bezier(.15,.8,.15,1) both;
+      visibility:visible!important;opacity:1!important;pointer-events:auto!important;
+      animation:bookPagesReveal 1.18s cubic-bezier(.18,.82,.16,1) both;
       transform-origin:center;
     }
     @keyframes bookPagesReveal{
-      0%{opacity:.08;transform:scale(.94)}
-      28%{opacity:.55;transform:scale(.965)}
+      0%{opacity:.16;transform:scale(.988)}
       100%{opacity:1;transform:scale(1)}
     }
     @keyframes bookCoverOpen{
       0%{transform:rotateY(0deg);filter:brightness(1)}
-      20%{transform:rotateY(-20deg);filter:brightness(.96)}
-      52%{transform:rotateY(-78deg);filter:brightness(.79)}
-      78%{transform:rotateY(-128deg);filter:brightness(.58)}
-      100%{transform:rotateY(-178deg);filter:brightness(.35)}
+      22%{transform:rotateY(-18deg);filter:brightness(.98)}
+      55%{transform:rotateY(-72deg);filter:brightness(.84)}
+      78%{transform:rotateY(-116deg);filter:brightness(.68)}
+      100%{transform:rotateY(-178deg);filter:brightness(.52)}
+    }
+    @media(max-width:760px){
+      .access-card{width:calc(100% - 28px);min-height:560px}
+      .access-card-copy{left:28px;right:28px;bottom:30px}
+      .access-card-copy b{font-size:23px}
     }
 
 </style>
@@ -1342,8 +1350,8 @@
       // Halaman login muncul di belakang; cover lalu terbuka dari sisi jilid kiri.
       $("#authScreen")?.classList.add("show-login");
       cover.classList.add("opening");
-      setTimeout(()=>gate.classList.add("hidden"),1080);
-      setTimeout(()=>$("#loginUsername")?.focus(),760);
+      setTimeout(()=>gate.classList.add("hidden"),1210);
+      setTimeout(()=>$("#loginUsername")?.focus(),900);
     }
     function closeLoginCard(){
       if($("#authScreen")?.classList.contains("hidden")) return;
