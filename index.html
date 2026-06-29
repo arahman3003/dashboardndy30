@@ -1476,6 +1476,23 @@ $("#noteImageFile")?.addEventListener("change",async e=>{
     setTimeout(()=>{loadSheetPredictions();updateSheetClock();},200);
 
 
+
+    /* Tutup semua popup dashboard: klik area luar, ESC, dan berlaku juga untuk popup yang ditambahkan nanti */
+    document.addEventListener("click",e=>{
+      const overlay=e.target.closest(".modal, .modal-overlay, .domain-modal, .pkcs-modal");
+      if(!overlay) return;
+      if(e.target===overlay){
+        overlay.classList.remove("show");
+      }
+    });
+    document.addEventListener("keydown",e=>{
+      if(e.key==="Escape"){
+        document.querySelectorAll(".modal.show, .modal-overlay.show, .domain-modal.show, .pkcs-modal.show")
+          .forEach(overlay=>overlay.classList.remove("show"));
+      }
+    });
+
+
     if(FIREBASE_READY) startFirebase();
   </script>
 </body>
