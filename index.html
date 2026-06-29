@@ -423,6 +423,44 @@
       .market-content{height:360px}
     }
 
+
+    /* RAPIKAN TATA LETAK TEKS PREDIKSI DARI SHEET */
+    .market-content{
+      display:block!important;
+      padding:24px!important;
+      overflow-y:auto!important;
+    }
+    .market-content-inner{
+      width:min(760px,100%)!important;
+      max-width:760px!important;
+      margin:0 auto!important;
+      padding:20px 24px!important;
+      border:1px solid #f1cade;
+      border-radius:18px;
+      background:rgba(255,255,255,.72);
+      box-shadow:0 8px 18px rgba(138,35,81,.06);
+      text-align:left!important;
+      line-height:1.72!important;
+      white-space:pre-wrap!important;
+    }
+    .market-content-inner h2{
+      margin:0 0 18px!important;
+      padding-bottom:13px;
+      border-bottom:1px solid #f2d7e4;
+      text-align:center!important;
+      line-height:1.2!important;
+    }
+    .market-empty{
+      min-height:100%;
+      display:grid;
+      place-content:center;
+      text-align:center;
+    }
+    @media(max-width:640px){
+      .market-content{padding:14px!important}
+      .market-content-inner{padding:16px!important;font-size:13px!important}
+    }
+
 </style>
 </head>
 <body>
@@ -1014,6 +1052,16 @@ $("#saveCharacterBtn").addEventListener("click",async()=>{
       const remain=close-curr,hh=Math.floor(remain/60),mm=remain%60;
       return {open:true,label:"BUKA",note:`Tutup ${hh?hh+"j ":""}${mm}m lagi`,schedule:sc};
     }
+    function tidySheetText(value){
+      return String(value ?? "")
+        .replace(/\r\n/g,"\n")
+        .replace(/\r/g,"\n")
+        .split("\n")
+        .map(line=>line.replace(/[ \t]+$/,""))
+        .join("\n")
+        .replace(/\n{3,}/g,"\n\n")
+        .trim();
+    }
     function sheetEscape(v){return safe(String(v??""));}
     function renderSheetPredictions(){
       const list=$("#marketList");if(!list)return;
@@ -1038,7 +1086,7 @@ $("#saveCharacterBtn").addEventListener("click",async()=>{
       if(active){
         const sc=active.status.schedule;
         sub.textContent=sc?`Google Sheet Sheet4 • Kolom F • Tutup ${sc.close} • Buka ${sc.open}`:"Google Sheet Sheet4 • Kolom F";
-        result.innerHTML=`<div class="market-content-inner"><h2>${sheetEscape(active.name)}</h2>${sheetEscape(active.content)}</div>`;
+        result.innerHTML=`<div class="market-content-inner"><h2>${sheetEscape(active.name)}</h2>${sheetEscape(tidySheetText(active.content))}</div>`;
       } else {
         sub.textContent="Google Sheet Sheet4 • Kolom E dan F";
         result.innerHTML='<div class="market-empty"><b>✦ Pilih Pasaran</b><span>Data dari kolom F akan tampil di sini.</span></div>';
