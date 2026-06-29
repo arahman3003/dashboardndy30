@@ -310,7 +310,54 @@
       .nav-btn{padding:10px 12px}
     }
 
-  </style>
+  
+    /* ===== PREDIKSI PASARAN — KONSEP LIVE MARKET ===== */
+    #page-prediksi{min-height:calc(100vh - 130px)}
+    .market-shell{
+      position:relative;overflow:hidden;border-radius:30px;padding:22px;
+      background:
+        radial-gradient(circle at 90% 0%,rgba(255,255,255,.30),transparent 23%),
+        radial-gradient(circle at 0% 100%,rgba(239,87,148,.16),transparent 25%),
+        linear-gradient(135deg,#fff7fb 0%,#fff 48%,#ffdcec 100%);
+      border:1px solid #f7c9df;box-shadow:var(--shadow)
+    }
+    .market-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:15px}
+    .market-kicker{display:inline-flex;padding:7px 10px;border-radius:999px;background:#ffe2ef;color:#b62667;font-size:10px;font-weight:950;letter-spacing:.8px}
+    .market-top h1{margin:7px 0 0;color:#471a35;font-size:27px;letter-spacing:-.7px}
+    .market-clock{min-width:188px;padding:12px 16px;border-radius:17px;background:linear-gradient(135deg,#ec5c9b,#bf296d);color:#fff;text-align:center;box-shadow:0 12px 24px rgba(192,35,105,.25)}
+    .market-clock b{display:block;font-size:21px}.market-clock span{display:block;margin-top:3px;font-size:10px;font-weight:800;opacity:.9}
+    .market-controls{display:grid;grid-template-columns:minmax(0,1fr) 190px auto;gap:10px;margin-bottom:13px}
+    .market-search,.market-filter{border:1px solid #f2c5d9;border-radius:14px;background:#fff;padding:12px 13px;outline:0;color:#582541}
+    .market-search:focus,.market-filter:focus{border-color:#ea71a9;box-shadow:0 0 0 4px rgba(233,77,145,.11)}
+    .market-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:15px}
+    .market-stat{border-radius:17px;padding:13px 15px;color:#fff;box-shadow:0 10px 22px rgba(100,28,63,.13)}
+    .market-stat b{display:block;font-size:25px;line-height:1;margin-top:5px}.market-stat span{font-size:11px;font-weight:900;opacity:.92}
+    .market-stat.total{background:linear-gradient(135deg,#8d4383,#d45e9d)}
+    .market-stat.open{background:linear-gradient(135deg,#3dbd91,#39a8bf)}
+    .market-stat.closed{background:linear-gradient(135deg,#d85d77,#9d345d)}
+    .market-workspace{display:grid;grid-template-columns:300px minmax(0,1fr);gap:14px;min-height:520px}
+    .market-list-panel,.market-result-panel{background:rgba(255,255,255,.84);border:1px solid #f1ccdc;border-radius:21px;overflow:hidden}
+    .market-list-title{padding:15px 16px;background:#fff6fb;color:#8d3260;font-size:12px;font-weight:950;text-transform:uppercase;letter-spacing:.75px;border-bottom:1px solid #f4d5e3}
+    .market-list{padding:10px;display:flex;flex-direction:column;gap:8px;max-height:570px;overflow:auto}
+    .market-item{width:100%;text-align:left;border:1px solid #f1cadb;background:#fff;border-radius:15px;padding:11px 12px;transition:.18s;color:#54213e}
+    .market-item:hover,.market-item.active{border-color:#e95e9d;background:#fff0f7;transform:translateX(2px);box-shadow:0 8px 14px rgba(177,47,104,.09)}
+    .market-item.closed{border-left:4px solid #d94a72}.market-item.open{border-left:4px solid #33b985}
+    .market-item-row{display:flex;justify-content:space-between;gap:9px;align-items:center}
+    .market-name{font-size:12px;font-weight:950}.market-badge{flex:0 0 auto;border-radius:999px;padding:4px 7px;color:#fff;font-size:9px;font-weight:950}
+    .market-item.open .market-badge{background:#20a974}.market-item.closed .market-badge{background:#d53c68}
+    .market-meta,.market-countdown{display:block;margin-top:6px;font-size:10px;font-weight:760;color:#8d6177}
+    .market-countdown{color:#b22c67}
+    .market-result-head{padding:15px 17px;display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid #f0d1df;background:#fff9fc}
+    .market-result-label{font-size:12px;font-weight:950;text-transform:uppercase;color:#8e3462;letter-spacing:.7px}.market-result-sub{display:block;margin-top:4px;color:#a07187;font-size:10px}
+    .market-result-actions{display:flex;gap:8px;flex-wrap:wrap}.market-action{border:1px solid #efb8d1;background:#fff;color:#9e2c60;border-radius:11px;padding:9px 11px;font-weight:900;font-size:11px}.market-action.primary{background:linear-gradient(135deg,#ed5a9b,#c62d72);color:#fff;border-color:transparent}
+    .market-content{min-height:435px;padding:35px 28px;display:grid;place-items:center;text-align:center}
+    .market-content-inner{max-width:620px;white-space:pre-wrap;line-height:1.78;font-size:15px;font-weight:770;color:#54213e}
+    .market-content-inner h2{white-space:normal;margin:0 0 17px;font-size:25px;color:#3b1730}.market-empty{color:#a46f86}.market-empty b{display:block;font-size:18px;color:#763257;margin-bottom:8px}
+    .market-note{font-size:11px;color:#a86c89;margin-top:14px}
+    @media(max-width:900px){.market-workspace{grid-template-columns:1fr}.market-list{max-height:280px}.market-workspace{min-height:0}.market-content{min-height:330px}}
+    @media(max-width:640px){.market-shell{padding:14px;border-radius:22px}.market-top{flex-direction:column}.market-clock{width:100%}.market-controls{grid-template-columns:1fr}.market-summary{grid-template-columns:1fr}.market-top h1{font-size:23px}.market-result-head{align-items:flex-start;flex-direction:column}.market-content{padding:25px 16px}}
+
+</style>
 </head>
 <body>
   <section id="authScreen">
@@ -370,7 +417,7 @@
               <span class="character-spark a">✦</span><span class="character-spark b">♥</span>
               <div class="character-card">
                 <!-- GANTI LINK FOTO KARAKTER DI BAWAH INI -->
-                <img id="characterImage" src="https://placehold.co/700x950/ea76ab/ffffff?text=FOTO+KARAKTER+NDY30" alt="Karakter pemilik dashboard">
+                <img id="characterImage" src="https://i.imgur.com/r94GqrT.jpeg" alt="Karakter pemilik dashboard">
               </div>
               <div class="character-label">Owner Dashboard ✦</div>
             </div>
@@ -394,14 +441,35 @@
         </section>
 
         <section id="page-prediksi" class="page">
-          <div class="board-top"><div><h1>Prediksi</h1><p>Konsep daftar data dan hasil cepat, disesuaikan untuk Dashboardndy30.</p></div><div class="toolbar"><button id="newPredictionBtn" class="btn btn-pink">＋ Tambah Data</button></div></div>
-          <div class="predict-layout">
-            <aside class="panel"><div class="panel-title">Daftar Data</div><div id="predictionList" class="prediction-list"></div></aside>
-            <section class="panel"><div id="predictionResult" class="result-box"><span>Pilih salah satu data</span><h2>Belum ada pilihan</h2><p>Tambahkan data baru, kemudian klik daftar data di sebelah kiri.</p></div></section>
+          <div class="market-shell">
+            <div class="market-top">
+              <div><span class="market-kicker">LIVE MARKET CONTROL</span><h1>Prediksi Pasaran</h1></div>
+              <div class="market-clock"><b id="marketClock">00:00:00 WIB</b><span id="marketClockMeta">Memuat status pasaran</span></div>
+            </div>
+            <div class="market-controls">
+              <input id="marketSearch" class="market-search" placeholder="Cari pasaran...">
+              <select id="marketFilter" class="market-filter"><option value="all">SEMUA STATUS</option><option value="open">SEDANG BUKA</option><option value="closed">SEDANG TUTUP</option></select>
+              <button id="newPredictionBtn" class="btn btn-pink">＋ Isi Prediksi</button>
+            </div>
+            <div class="market-summary">
+              <article class="market-stat total"><span>Total Pasaran</span><b id="marketTotal">0</b></article>
+              <article class="market-stat open"><span>Sedang Buka</span><b id="marketOpen">0</b></article>
+              <article class="market-stat closed"><span>Sedang Tutup</span><b id="marketClosed">0</b></article>
+            </div>
+            <div class="market-workspace">
+              <aside class="market-list-panel"><div class="market-list-title">Daftar Pasaran</div><div id="marketList" class="market-list"></div></aside>
+              <main class="market-result-panel">
+                <div class="market-result-head">
+                  <div><span class="market-result-label">Hasil Prediksi</span><small id="marketResultSub" class="market-result-sub">Pilih pasaran di sebelah kiri</small></div>
+                  <div class="market-result-actions"><button id="editSelectedPrediction" class="market-action">Edit Prediksi</button><button id="copyPrediction" class="market-action primary">Copy Sekarang</button></div>
+                </div>
+                <div id="predictionResult" class="market-content"><div class="market-empty"><b>✦ Pilih Pasaran</b><span>Hasil prediksi dari pasaran terpilih akan tampil di sini.</span></div></div>
+              </main>
+            </div>
           </div>
         </section>
 
-        <section id="page-gambar" class="page">
+        <section id="page-gambar class="page">
           <div class="board-top"><div><h1>Gambar</h1><p>Simpan koleksi gambar dari link. Foto karakter dashboard juga dapat diganti dari sini.</p></div></div>
           <div class="panel">
             <div class="image-form"><input id="imageTitle" placeholder="Nama gambar"><input id="imageUrl" placeholder="Link gambar (https://...)"><button id="addImageBtn" class="btn btn-pink">Tambah Gambar</button></div>
@@ -426,10 +494,11 @@
 
   <div id="predictionModal" class="modal">
     <form id="predictionForm" class="modal-box">
-      <h3>Tambah Data Prediksi</h3>
-      <div class="field"><label>Nama data</label><input id="predictionTitle" required placeholder="Contoh: Data Utama"></div>
-      <div class="field"><label>Isi / hasil</label><textarea id="predictionContent" required rows="7" placeholder="Tulis informasi atau hasil di sini..."></textarea></div>
-      <div class="modal-actions"><button type="button" class="btn btn-soft" data-close="predictionModal">Batal</button><button class="btn btn-pink" type="submit">Simpan Data</button></div>
+      <h3 id="predictionModalHeading">Isi Prediksi Pasaran</h3>
+      <input id="predictionId" type="hidden">
+      <div class="field"><label>Pasaran</label><select id="predictionMarket" required></select></div>
+      <div class="field"><label>Isi / hasil prediksi</label><textarea id="predictionContent" required rows="9" placeholder="Tulis hasil prediksi pasaran di sini..."></textarea></div>
+      <div class="modal-actions"><button type="button" class="btn btn-soft" data-close="predictionModal">Batal</button><button class="btn btn-pink" type="submit">Simpan Prediksi</button></div>
     </form>
   </div>
 
@@ -700,23 +769,8 @@
         submitBtn.disabled = false;
       }
     });
-    $("#newPredictionBtn").addEventListener("click",()=>{ $("#predictionForm").reset();openModal("predictionModal");});
-    $("#predictionForm").addEventListener("submit",async(e)=>{
-      e.preventDefault();
-      const submitBtn = e.submitter || $("#predictionForm button[type='submit']");
-      submitBtn.disabled = true;
-      try{
-        await savePrediction({title:$("#predictionTitle").value.trim(),content:$("#predictionContent").value.trim()});
-        closeModal("predictionModal");
-        toast("Data prediksi tersimpan.");
-      }catch(err){
-        console.error("Gagal menyimpan prediksi:", err);
-        toast("Gagal menyimpan data. Cek koneksi atau Rules.");
-      }finally{
-        submitBtn.disabled = false;
-      }
-    });
-    $("#addImageBtn").addEventListener("click",async()=>{
+openModal("predictionModal");});
+$("#addImageBtn").addEventListener("click",async()=>{
       let title=$("#imageTitle").value.trim(),url=$("#imageUrl").value.trim();
       if(!title||!url){toast("Isi nama dan link gambar dahulu.");return;}
       try{
@@ -750,6 +804,132 @@
       const cp=e.target.closest("#copyPrediction");if(cp){const p=predictions.find(x=>x.id===selectedPredictionId);if(p){await navigator.clipboard.writeText(`${p.title}\n\n${p.content}`);toast("Isi data sudah disalin.");}}
       const di=e.target.closest("[data-delete-image]");if(di)await removeImage(di.dataset.deleteImage);
     });
+
+
+    /* ===== DATA PASARAN & FITUR PREDIKSI LIVE ===== */
+    const DEFAULT_MARKETS = [{"id": "hokidraw", "name": "HOKIDRAW", "day": "Senin s/d Minggu", "close": "RESULT 24X", "open": "1 JAM SEKALI", "order": 0}, {"id": "toto-macau-pagi", "name": "TOTO MACAU PAGI", "day": "Senin s/d Minggu", "close": "00:00 WIB", "open": "00:15 WIB", "order": 1}, {"id": "kentucky-midday", "name": "KENTUCKY MIDDAY", "day": "Senin s/d Minggu", "close": "00:05 WIB", "open": "00:20 WIB", "order": 2}, {"id": "florida-midday", "name": "FLORIDA MIDDAY", "day": "Senin s/d Minggu", "close": "00:20 WIB", "open": "00:30 WIB", "order": 3}, {"id": "huahin-0100", "name": "HUAHIN 0100", "day": "Senin s/d Minggu", "close": "00:45 WIB", "open": "01:00 WIB", "order": 4}, {"id": "bangkok-0130", "name": "BANGKOK 0130", "day": "Senin s/d Minggu", "close": "01:15 WIB", "open": "01:30 WIB", "order": 5}, {"id": "newyork-midday", "name": "NEWYORK MIDDAY", "day": "Senin s/d Minggu", "close": "01:15 WIB", "open": "01:25 WIB", "order": 6}, {"id": "carolina-day", "name": "CAROLINA DAY", "day": "Senin s/d Minggu", "close": "01:45 WIB", "open": "02:00 WIB", "order": 7}, {"id": "brunei-02", "name": "BRUNEI 02", "day": "Senin s/d Minggu", "close": "02:30 WIB", "open": "02:45 WIB", "order": 8}, {"id": "oregon-03", "name": "OREGON 03", "day": "Senin s/d Minggu", "close": "02:50 WIB", "open": "03:00 WIB", "order": 9}, {"id": "oregon-06", "name": "OREGON 06", "day": "Senin s/d Minggu", "close": "05:50 WIB", "open": "06:00 WIB", "order": 10}, {"id": "california", "name": "CALIFORNIA", "day": "Senin s/d Minggu", "close": "08:25 WIB", "open": "08:30 WIB", "order": 11}, {"id": "florida-evening", "name": "FLORIDA EVENING", "day": "Senin s/d Minggu", "close": "08:35 WIB", "open": "08:45 WIB", "order": 12}, {"id": "oregon-09", "name": "OREGON 09", "day": "Senin s/d Minggu", "close": "08:50 WIB", "open": "09:00 WIB", "order": 13}, {"id": "bangkok-0930", "name": "BANGKOK 0930", "day": "Senin s/d Minggu", "close": "09:15 WIB", "open": "09:30 WIB", "order": 14}, {"id": "newyork-evening", "name": "NEWYORK EVENING", "day": "Senin s/d Minggu", "close": "09:25 WIB", "open": "09:35 WIB", "order": 15}, {"id": "totocambodia", "name": "TOTOCAMBODIA", "day": "Senin s/d Minggu", "close": "10:45 WIB", "open": "11:00 WIB", "order": 16}, {"id": "kentucky-evening", "name": "KENTUCKY EVENING", "day": "Senin s/d Minggu", "close": "09:45 WIB", "open": "10:00 WIB", "order": 17}, {"id": "carolina-evening", "name": "CAROLINA EVENING", "day": "Senin s/d Minggu", "close": "10:17 WIB", "open": "10:22 WIB", "order": 18}, {"id": "chelsea-11", "name": "CHELSEA 11", "day": "Senin s/d Minggu", "close": "11:00 WIB", "open": "11:15 WIB", "order": 19}, {"id": "oregon-12", "name": "OREGON 12", "day": "Senin s/d Minggu", "close": "11:50 WIB", "open": "12:00 WIB", "order": 20}, {"id": "poipet12", "name": "POIPET12", "day": "Senin s/d Minggu", "close": "12:15 WIB", "open": "12:30 WIB", "order": 21}, {"id": "bullseye", "name": "BULLSEYE", "day": "Senin s/d Minggu", "close": "13:00 WIB", "open": "13:15 WIB", "order": 22}, {"id": "totomacau-siang", "name": "TOTOMACAU SIANG", "day": "Senin s/d Minggu", "close": "13:00 WIB", "open": "13:15 WIB", "order": 23}, {"id": "sydney", "name": "SYDNEY", "day": "Senin s/d Minggu", "close": "13:49 WIB", "open": "14:05 WIB", "order": 24}, {"id": "jakarta-1400", "name": "JAKARTA 1400", "day": "Senin s/d Minggu", "close": "13:55 WIB", "open": "14:10 WIB", "order": 25}, {"id": "brunei-14", "name": "BRUNEI 14", "day": "Senin s/d Minggu", "close": "14:30 WIB", "open": "14:45 WIB", "order": 26}, {"id": "chelsea-15", "name": "CHELSEA 15", "day": "Senin s/d Minggu", "close": "15:00 WIB", "open": "15:15 WIB", "order": 27}, {"id": "totomali-1530", "name": "TOTOMALI 1530", "day": "Senin s/d Minggu", "close": "15:15 WIB", "open": "15:30 WIB", "order": 28}, {"id": "totomacau-5d-sore", "name": "TOTOMACAU 5D SORE", "day": "Senin s/d Minggu", "close": "15:15 WIB", "open": "15:30 WIB", "order": 29}, {"id": "poipet15", "name": "POIPET15", "day": "Senin s/d Minggu", "close": "15:15 WIB", "open": "15:30 WIB", "order": 30}, {"id": "totomacau-sore", "name": "TOTOMACAU SORE", "day": "Senin s/d Minggu", "close": "16:00 WIB", "open": "16:15 WIB", "order": 31}, {"id": "huahin-1630", "name": "HUAHIN 1630", "day": "Senin s/d Minggu", "close": "16:15 WIB", "open": "16:30 WIB", "order": 32}, {"id": "king-kong4d-i", "name": "KING KONG4D I", "day": "Senin s/d Minggu", "close": "17:00 WIB", "open": "17:15 WIB", "order": 33}, {"id": "singapore", "name": "SINGAPORE", "day": "HARI SELASA & JUM'AT ( LIBUR )", "close": "17:30 WIB", "open": "17:45 WIB", "order": 34}, {"id": "magnum4d", "name": "MAGNUM4D", "day": "HARI RABU, SABTU & MINGGU", "close": "18:10 WIB", "open": "18:40 WIB", "order": 35}, {"id": "totomacau-malam-i", "name": "TOTOMACAU MALAM I", "day": "Senin s/d Minggu", "close": "19:00 WIB", "open": "19:15 WIB", "order": 36}, {"id": "chelsea-19", "name": "CHELSEA 19", "day": "Senin s/d Minggu", "close": "19:00 WIB", "open": "19:15 WIB", "order": 37}, {"id": "poipet19", "name": "POIPET19", "day": "Senin s/d Minggu", "close": "19:30 WIB", "open": "19:45 WIB", "order": 38}, {"id": "pcso", "name": "PCSO", "day": "Minggu Libur", "close": "19:50 WIB", "open": "20:10 WIB", "order": 39}, {"id": "totomali-2030", "name": "TOTOMALI 2030", "day": "Selasa s/d Minggu", "close": "20:15 WIB", "open": "20:30 WIB", "order": 40}, {"id": "huahin-2100", "name": "HUAHIN 2100", "day": "Selasa s/d Minggu", "close": "20:45 WIB", "open": "21:00 WIB", "order": 41}, {"id": "chelsea-21", "name": "CHELSEA 21", "day": "Senin s/d Minggu", "close": "21:00 WIB", "open": "21:15 WIB", "order": 42}, {"id": "totomacau-5d-malam", "name": "TOTOMACAU 5D MALAM", "day": "Senin s/d Minggu", "close": "21:15 WIB", "open": "21:30 WIB", "order": 43}, {"id": "nevada", "name": "NEVADA", "day": "Senin s/d Minggu", "close": "21:15 WIB", "open": "21:30 WIB", "order": 44}, {"id": "brunei-21", "name": "BRUNEI 21", "day": "Senin s/d Minggu", "close": "21:30 WIB", "open": "21:45 WIB", "order": 45}, {"id": "totomacau-malam-ii", "name": "TOTOMACAU MALAM II", "day": "Senin s/d Minggu", "close": "22:00 WIB", "open": "22:15 WIB", "order": 46}, {"id": "poipet22", "name": "POIPET22", "day": "Senin s/d Minggu", "close": "22:30 WIB", "open": "22:45 WIB", "order": 47}, {"id": "hongkong", "name": "HONGKONG", "day": "Senin s/d Minggu", "close": "22:59 WIB", "open": "23:15 WIB", "order": 48}, {"id": "totomacau-malam-iii", "name": "TOTOMACAU MALAM III", "day": "Senin s/d Minggu", "close": "23:00 WIB", "open": "23:15 WIB", "order": 49}, {"id": "totomali-2330", "name": "TOTOMALI 2330", "day": "Senin s/d Minggu", "close": "23:15 WIB", "open": "23:30 WIB", "order": 50}, {"id": "jakarta-2330", "name": "JAKARTA 2330", "day": "Senin s/d Sabtu", "close": "23:25 WIB", "open": "23:40 WIB", "order": 51}, {"id": "king-kong4d-ii", "name": "KING KONG4D II", "day": "Senin s/d Sabtu", "close": "23:30 WIB", "open": "23:45 WIB", "order": 52}];
+    let selectedMarketId = DEFAULT_MARKETS[0]?.id || null;
+
+    function wibParts(){
+      const parts = new Intl.DateTimeFormat("en-GB", {
+        timeZone:"Asia/Jakarta", hour:"2-digit", minute:"2-digit", second:"2-digit", hourCycle:"h23"
+      }).formatToParts(new Date());
+      const map={}; parts.forEach(p=>map[p.type]=p.value);
+      return {h:Number(map.hour||0),m:Number(map.minute||0),s:Number(map.second||0)};
+    }
+    function minuteOf(text){
+      const m=String(text||"").match(/(\d{1,2}):(\d{2})/);
+      return m ? Number(m[1])*60+Number(m[2]) : null;
+    }
+    function marketStatus(m){
+      if(/HOKI\s*DRAW|HOKIDRAW/i.test(m.name)) return {open:true,label:"BUKA",note:"Result 1 jam sekali"};
+      const now=wibParts(), nowMin=now.h*60+now.m, close=minuteOf(m.close);
+      if(close===null) return {open:true,label:"BUKA",note:"Jadwal aktif"};
+      if(nowMin>=close) return {open:false,label:"TUTUP",note:"Sudah tutup hari ini"};
+      const d=close-nowMin, hh=Math.floor(d/60), mm=d%60;
+      return {open:true,label:"BUKA",note:`Tutup ${hh?hh+"j ":""}${mm}m lagi`};
+    }
+    function recordForMarket(marketId){
+      return predictions.find(p=>p.marketId===marketId) || predictions.find(p=>p.id===marketId) || null;
+    }
+    function populateMarketSelect(){
+      const select=$("#predictionMarket"); if(!select) return;
+      select.innerHTML=DEFAULT_MARKETS.map(m=>`<option value="${safe(m.id)}">${safe(m.name)} — Tutup ${safe(m.close)}</option>`).join("");
+    }
+    function renderPredictions(){
+      const list=$("#marketList"); if(!list) return;
+      const q=($("#marketSearch")?.value||"").trim().toLowerCase();
+      const filter=$("#marketFilter")?.value||"all";
+      const decorated=DEFAULT_MARKETS.map(m=>({...m,status:marketStatus(m)}));
+      const shown=decorated.filter(m=>{
+        const queryOk=!q||m.name.toLowerCase().includes(q);
+        const statusOk=filter==="all"||(filter==="open"&&m.status.open)||(filter==="closed"&&!m.status.open);
+        return queryOk&&statusOk;
+      });
+      $("#marketTotal").textContent=decorated.length;
+      $("#marketOpen").textContent=decorated.filter(m=>m.status.open).length;
+      $("#marketClosed").textContent=decorated.filter(m=>!m.status.open).length;
+      if(!shown.some(m=>m.id===selectedMarketId) && shown[0]) selectedMarketId=shown[0].id;
+      list.innerHTML=shown.length?shown.map(m=>`<button type="button" class="market-item ${m.status.open?"open":"closed"} ${m.id===selectedMarketId?"active":""}" data-market-id="${safe(m.id)}"><div class="market-item-row"><span class="market-name">${safe(m.name)}</span><span class="market-badge">${m.status.label}</span></div><span class="market-meta">◷ Tutup ${safe(m.close)} • Buka ${safe(m.open)}</span><span class="market-countdown">${safe(m.status.note)}</span></button>`).join(""):`<div class="empty">Pasaran tidak ditemukan.</div>`;
+      const selected=DEFAULT_MARKETS.find(m=>m.id===selectedMarketId);
+      const record=selected?recordForMarket(selected.id):null;
+      const result=$("#predictionResult"), sub=$("#marketResultSub");
+      if(selected){
+        sub.textContent=`${selected.name} • Tutup ${selected.close} • Buka ${selected.open}`;
+        result.innerHTML=record?.content ? `<div class="market-content-inner"><h2>${safe(selected.name)}</h2>${safe(record.content)}</div>` : `<div class="market-empty"><b>${safe(selected.name)}</b><span>Belum ada prediksi yang disimpan untuk pasaran ini.</span><div class="market-note">Tekan “Isi Prediksi” untuk menambahkan data.</div></div>`;
+      } else {
+        sub.textContent="Pilih pasaran di sebelah kiri";
+        result.innerHTML='<div class="market-empty"><b>✦ Pilih Pasaran</b><span>Hasil prediksi dari pasaran terpilih akan tampil di sini.</span></div>';
+      }
+      updateStats();
+    }
+    function openPredictionEditor(marketId=selectedMarketId){
+      const market=DEFAULT_MARKETS.find(m=>m.id===marketId) || DEFAULT_MARKETS[0];
+      if(!market) return;
+      const record=recordForMarket(market.id);
+      populateMarketSelect();
+      $("#predictionId").value=record?.id||"";
+      $("#predictionMarket").value=market.id;
+      $("#predictionContent").value=record?.content||"";
+      $("#predictionModalHeading").textContent=record?"Edit Prediksi Pasaran":"Isi Prediksi Pasaran";
+      openModal("predictionModal");
+    }
+    function updateMarketClock(){
+      const p=wibParts(), clock=$("#marketClock"), meta=$("#marketClockMeta");
+      if(clock) clock.textContent=`${String(p.h).padStart(2,"0")}:${String(p.m).padStart(2,"0")}:${String(p.s).padStart(2,"0")} WIB`;
+      const decorated=DEFAULT_MARKETS.map(m=>marketStatus(m));
+      if(meta) meta.textContent=`${decorated.filter(x=>x.open).length} buka • ${decorated.filter(x=>!x.open).length} tutup`;
+      renderPredictions();
+    }
+
+    // Ganti penyimpanan lama menjadi data per pasaran.
+    async function savePrediction(data){
+      const market=DEFAULT_MARKETS.find(m=>m.id===data.marketId);
+      const payload={marketId:data.marketId,title:market?.name||"Pasaran",content:data.content,updatedAt:Date.now(),createdAt:data.createdAt||Date.now()};
+      if(previewMode){
+        if(data.id) predictions=predictions.map(p=>p.id===data.id?{...p,...payload}:p);
+        else predictions.unshift({...payload,id:id()});
+        localSet("ndy30Predictions",predictions); selectedMarketId=data.marketId; renderPredictions(); return;
+      }
+      if(data.id) await update(ref(db,`dashboardndy30/predictions/${data.id}`),payload);
+      else { const newRef=push(ref(db,"dashboardndy30/predictions")); await set(newRef,payload); }
+      selectedMarketId=data.marketId;
+    }
+    async function removePrediction(predId){
+      if(!predId) return;
+      if(!confirm("Hapus prediksi pasaran ini?"))return;
+      if(previewMode){predictions=predictions.filter(p=>p.id!==predId);localSet("ndy30Predictions",predictions);renderPredictions();return;}
+      await remove(ref(db,`dashboardndy30/predictions/${predId}`));
+    }
+
+    $("#marketSearch")?.addEventListener("input",renderPredictions);
+    $("#marketFilter")?.addEventListener("change",renderPredictions);
+    $("#newPredictionBtn")?.addEventListener("click",()=>openPredictionEditor(selectedMarketId));
+    $("#editSelectedPrediction")?.addEventListener("click",()=>openPredictionEditor(selectedMarketId));
+    $("#predictionForm")?.addEventListener("submit",async(e)=>{
+      e.preventDefault();
+      const btn=e.submitter||$("#predictionForm button[type='submit']");
+      btn.disabled=true;
+      try{
+        await savePrediction({id:$("#predictionId").value,marketId:$("#predictionMarket").value,content:$("#predictionContent").value.trim()});
+        closeModal("predictionModal");toast("Prediksi pasaran tersimpan.");
+      }catch(err){console.error(err);toast("Gagal menyimpan prediksi. Cek koneksi atau Rules.");}
+      finally{btn.disabled=false;}
+    });
+    document.addEventListener("click",async(e)=>{
+      const item=e.target.closest("[data-market-id]");
+      if(item){selectedMarketId=item.dataset.marketId;renderPredictions();}
+      const copy=e.target.closest("#copyPrediction");
+      if(copy){
+        const market=DEFAULT_MARKETS.find(m=>m.id===selectedMarketId), record=market&&recordForMarket(market.id);
+        if(!record?.content){toast("Belum ada prediksi untuk pasaran ini.");return;}
+        await navigator.clipboard.writeText(`${market.name}\n\n${record.content}`);toast("Prediksi disalin.");
+      }
+    });
+    populateMarketSelect();
+    setInterval(updateMarketClock,1000);
+    setTimeout(updateMarketClock,100);
+
 
     if(FIREBASE_READY) startFirebase();
   </script>
