@@ -681,6 +681,14 @@
     }
     #page-dashboard .hero h1{margin-bottom:0!important}
 
+
+    /* HERO HANYA UNTUK DASHBOARD AWAL */
+    #page-dashboard{display:none}
+    #page-dashboard.active{display:block}
+    #page-notepad,#page-prediksi,#page-gambar{display:none}
+    #page-notepad.active,#page-prediksi.active,#page-gambar.active{display:block}
+    #page-dashboard + #page-notepad{margin-top:0}
+
 </style>
 </head>
 <body>
