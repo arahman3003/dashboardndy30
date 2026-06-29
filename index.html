@@ -1185,15 +1185,25 @@
     function localSettings(){ return JSON.parse(localStorage.getItem("ndy30Settings") || "{}"); }
     function saveLocalSettings(v){ localStorage.setItem("ndy30Settings", JSON.stringify(v)); }
 
-    function switchPage(page){
+    const LAST_PAGE_KEY="ndy30LastActivePage";
+    const VALID_PAGES=["dashboard","notepad","prediksi","gambar"];
+
+    function getLastPage(){
+      const saved=localStorage.getItem(LAST_PAGE_KEY);
+      return VALID_PAGES.includes(saved)?saved:"dashboard";
+    }
+
+    function switchPage(page,{save=true,scroll=true}={}){
+      const target=VALID_PAGES.includes(page)?page:"dashboard";
       $$(".page").forEach(p=>{
-        const isActive=p.id===`page-${page}`;
+        const isActive=p.id===`page-${target}`;
         p.classList.toggle("active",isActive);
         p.style.display=isActive?"block":"none";
       });
-      $$(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+      $$(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.page===target));
+      if(save) localStorage.setItem(LAST_PAGE_KEY,target);
       $("#sidebar").classList.remove("open");
-      window.scrollTo({top:0,behavior:"smooth"});
+      if(scroll) window.scrollTo({top:0,behavior:"smooth"});
     }
 
     function updateStats(){
@@ -1428,7 +1438,7 @@
           dashboardSettings = {...dashboardSettings, ...localSettings()};
           applyDashboardSettings(dashboardSettings);
           setAppVisible(true);
-          switchPage("dashboard");
+          switchPage(getLastPage(),{save:false,scroll:false});
         } else if(!previewMode){
           setAppVisible(false);
           closeLoginCard();
@@ -1920,8 +1930,8 @@ $("#noteImageFile")?.addEventListener("change",async e=>{
       }
     });
 
-    // Pastikan saat pertama dibuka hanya Dashboard Awal yang terlihat.
-    setTimeout(()=>switchPage("dashboard"),0);
+    // Saat refresh, tetap buka menu terakhir yang sedang dipakai.
+    setTimeout(()=>switchPage(getLastPage(),{save:false,scroll:false}),0);
 
     // Cadangan: bila koneksi Firebase sangat lambat, tampilkan login setelah 6 detik.
     setTimeout(()=>{
