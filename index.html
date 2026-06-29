@@ -443,12 +443,13 @@
     /* ==========================================================
        FIREBASE CONFIG — AUTH + REALTIME DATABASE
        1. Buka Firebase Console > Project settings > Your apps > Web app.
-       2. Salin firebaseConfig ke bawah ini.
+       2. Pastikan databaseURL Realtime Database ikut ada di config.
        3. Setelah diisi, ubah FIREBASE_READY menjadi true.
        ========================================================== */
     const firebaseConfig = {
       apiKey: "AIzaSyDaoEo6xrCHQdgVHb0_h4FPp3oUs_Rw0-0",
       authDomain: "dashboardndy30.firebaseapp.com",
+      databaseURL: "https://dashboardndy30-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "dashboardndy30",
       storageBucket: "dashboardndy30.firebasestorage.app",
       messagingSenderId: "1086364739819",
@@ -679,11 +680,66 @@
     $("#noteSearch").addEventListener("input",renderNotes);
 
     $("#newNoteBtn").addEventListener("click",()=>{ $("#noteForm").reset();$("#noteId").value="";$("#noteModalTitle").textContent="Catatan Baru";openModal("noteModal");});
-    $("#noteForm").addEventListener("submit",async(e)=>{e.preventDefault();await saveNote({id:$("#noteId").value,title:$("#noteTitle").value.trim(),content:$("#noteContent").value.trim(),color:$("#noteColor").value});closeModal("noteModal");toast("Catatan tersimpan.");});
+    $("#noteForm").addEventListener("submit",async(e)=>{
+      e.preventDefault();
+      const submitBtn = e.submitter || $("#noteForm button[type='submit']");
+      submitBtn.disabled = true;
+      try{
+        await saveNote({
+          id:$("#noteId").value,
+          title:$("#noteTitle").value.trim(),
+          content:$("#noteContent").value.trim(),
+          color:$("#noteColor").value
+        });
+        closeModal("noteModal");
+        toast("Catatan tersimpan.");
+      }catch(err){
+        console.error("Gagal menyimpan catatan:", err);
+        toast("Gagal menyimpan. Cek koneksi atau Rules Realtime Database.");
+      }finally{
+        submitBtn.disabled = false;
+      }
+    });
     $("#newPredictionBtn").addEventListener("click",()=>{ $("#predictionForm").reset();openModal("predictionModal");});
-    $("#predictionForm").addEventListener("submit",async(e)=>{e.preventDefault();await savePrediction({title:$("#predictionTitle").value.trim(),content:$("#predictionContent").value.trim()});closeModal("predictionModal");toast("Data prediksi tersimpan.");});
-    $("#addImageBtn").addEventListener("click",async()=>{let title=$("#imageTitle").value.trim(),url=$("#imageUrl").value.trim();if(!title||!url){toast("Isi nama dan link gambar dahulu.");return;}await saveImage({title,url});$("#imageTitle").value="";$("#imageUrl").value="";toast("Gambar ditambahkan.");});
-    $("#saveCharacterBtn").addEventListener("click",async()=>{const url=$("#characterUrl").value.trim();if(!url){toast("Masukkan link foto karakter.");return;}await saveCharacter(url);$("#characterUrl").value="";});
+    $("#predictionForm").addEventListener("submit",async(e)=>{
+      e.preventDefault();
+      const submitBtn = e.submitter || $("#predictionForm button[type='submit']");
+      submitBtn.disabled = true;
+      try{
+        await savePrediction({title:$("#predictionTitle").value.trim(),content:$("#predictionContent").value.trim()});
+        closeModal("predictionModal");
+        toast("Data prediksi tersimpan.");
+      }catch(err){
+        console.error("Gagal menyimpan prediksi:", err);
+        toast("Gagal menyimpan data. Cek koneksi atau Rules.");
+      }finally{
+        submitBtn.disabled = false;
+      }
+    });
+    $("#addImageBtn").addEventListener("click",async()=>{
+      let title=$("#imageTitle").value.trim(),url=$("#imageUrl").value.trim();
+      if(!title||!url){toast("Isi nama dan link gambar dahulu.");return;}
+      try{
+        await saveImage({title,url});
+        $("#imageTitle").value="";$("#imageUrl").value="";
+        toast("Gambar ditambahkan.");
+      }catch(err){
+        console.error("Gagal menyimpan gambar:", err);
+        toast("Gagal menyimpan gambar. Cek koneksi atau Rules.");
+      }
+    });
+    $("#saveCharacterBtn").addEventListener("click",async()=>{
+      const url=$("#characterUrl").value.trim();
+      if(!url){toast("Masukkan link foto karakter.");return;}
+      try{
+        await saveCharacter(url);
+        $("#characterUrl").value="";
+        toast("Foto karakter disimpan.");
+      }catch(err){
+        console.error("Gagal menyimpan foto karakter:", err);
+        toast("Gagal menyimpan foto. Cek koneksi atau Rules.");
+      }
+    });
     $$("[data-close]").forEach(b=>b.addEventListener("click",()=>closeModal(b.dataset.close)));
 
     document.addEventListener("click",async(e)=>{
