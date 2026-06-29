@@ -470,6 +470,39 @@
       text-align:center!important;
     }
 
+
+    /* ===== NOTEPAD BOARD + MOVE TABLE ===== */
+    #page-notepad{min-height:calc(100vh - 130px)}
+    .notehub-top{
+      display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap;
+      padding:12px 14px;border-radius:21px;background:linear-gradient(135deg,#4a1734,#7d2452);
+      border:1px solid rgba(255,255,255,.18);box-shadow:0 14px 32px rgba(105,29,68,.16);color:#fff
+    }
+    .notehub-brand-mini{display:flex;align-items:center;gap:10px}.notehub-logo{width:38px;height:38px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(145deg,#ff8fbe,#e13d85);font-size:18px}
+    .notehub-brand-mini b{display:block;font-size:13px;letter-spacing:.45px}.notehub-brand-mini small{display:block;margin-top:3px;font-size:9px;font-weight:900;letter-spacing:.8px;color:#ffd2e5}
+    .notehub-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .notehub-btn,.notehub-select{
+      min-height:38px;padding:0 12px;border-radius:12px;border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.09);color:#fff;
+      font-size:11px;font-weight:950;letter-spacing:.25px;cursor:pointer
+    }
+    .notehub-btn:hover{background:rgba(255,255,255,.18)}.notehub-btn.primary{background:linear-gradient(135deg,#fa77af,#db2f78);box-shadow:0 8px 16px rgba(226,43,119,.28)}
+    .notehub-btn.move-on{background:linear-gradient(135deg,#34c6df,#3d80ed);box-shadow:0 0 0 3px rgba(91,211,255,.18)}
+    .notehub-select{background:#fff;color:#76284f;border-color:#f1bed5;outline:none}
+    .note-search-row{margin:12px 0}.note-search{width:100%;border:1px solid #efc5d7;border-radius:14px;padding:12px 14px;outline:none;background:#fff}
+    .note-search:focus{border-color:#e95d9d;box-shadow:0 0 0 4px rgba(233,77,145,.11)}
+    .note-board-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:18px 0 13px}.note-board-head h1{margin:0;font-size:21px;text-transform:uppercase;letter-spacing:.3px;color:#56203d}.note-board-head p{margin:5px 0 0;color:#986b81;font-size:12px}
+    .note-count-badge{padding:8px 11px;border-radius:999px;background:#fff;color:#a92f66;border:1px solid #f1c6da;font-size:11px;font-weight:950}
+    .note-board-grid{columns:4 250px;column-gap:16px;display:block!important}.note-board-grid .note{display:inline-block;width:100%;break-inside:avoid;margin:0 0 16px;position:relative;border-radius:22px;padding:15px 15px 12px;border:1px solid rgba(255,255,255,.6);box-shadow:0 15px 28px rgba(110,27,68,.14)}
+    .note-board-grid .note.pink{background:linear-gradient(145deg,#ffd3e5,#ef94bc)}.note-board-grid .note.peach{background:linear-gradient(145deg,#ffe0be,#f5b983)}.note-board-grid .note.lilac{background:linear-gradient(145deg,#e5d1ff,#c8a8ef)}.note-board-grid .note.mint{background:linear-gradient(145deg,#cff3df,#9ee2bd)}
+    .note-pin{position:absolute;right:14px;top:13px;width:13px;height:13px;border-radius:50%;background:rgba(75,25,51,.22)}
+    .note-category{display:inline-flex;margin:0 0 10px;padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.35);border:1px solid rgba(66,24,47,.12);font-size:9px;font-weight:950;letter-spacing:.5px;color:#54203b}
+    .note-board-grid .note h3{margin:0 18px 10px 0;font-size:14px;line-height:1.35;text-transform:uppercase;color:#412036}.note-board-grid .note p{white-space:pre-wrap;line-height:1.58;margin:0;color:#4d263d;font-size:13px;max-height:300px;overflow-y:auto}
+    .note-board-image{width:100%;max-height:190px;object-fit:cover;border-radius:14px;margin:10px 0;border:1px solid rgba(91,30,59,.15)}
+    .note-board-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid rgba(78,24,52,.13);padding-top:10px;margin-top:12px}.note-board-footer small{font-size:10px;font-weight:850;color:rgba(74,30,53,.63)}
+    .note-icon-actions{display:flex;gap:6px}.note-icon-btn{width:27px;height:27px;display:grid;place-items:center;border:1px solid rgba(74,24,51,.12);border-radius:9px;background:rgba(255,255,255,.35);color:#642644;font-size:13px;cursor:pointer}.note-icon-btn:hover{background:rgba(255,255,255,.65);transform:translateY(-1px)}
+    .note-board-grid.move-mode .note{cursor:grab;outline:2px dashed rgba(224,44,123,.55);outline-offset:3px}.note-board-grid.move-mode .note:active{cursor:grabbing}.note-board-grid .note.dragging{opacity:.45}.note-board-grid .note.drop-target{outline:3px solid #5a9cf1;outline-offset:4px}
+    @media(max-width:800px){.notehub-top{align-items:flex-start}.notehub-tools{width:100%}.notehub-btn,.notehub-select{flex:1}.note-board-grid{columns:2 220px}}@media(max-width:560px){.note-board-grid{columns:1}.notehub-btn,.notehub-select{flex:1 1 46%}.note-board-head{align-items:flex-start;flex-direction:column}}
+
 </style>
 </head>
 <body>
@@ -538,8 +571,19 @@
 </section>
 
         <section id="page-notepad" class="page">
-          <div class="board-top"><div><h1>Note Pad</h1><p>Simpan catatan pribadi dalam kartu warna-warni.</p></div><div class="toolbar"><input id="noteSearch" class="search" placeholder="Cari catatan..."><button id="newNoteBtn" class="btn btn-pink">＋ Catatan Baru</button></div></div>
-          <div id="noteGrid" class="note-grid"></div>
+          <div class="notehub-top">
+            <div class="notehub-brand-mini"><span class="notehub-logo">📝</span><div><b>KERJABOSS NOTE</b><small>CATATAN KERJA TERSIMPAN</small></div></div>
+            <div class="notehub-tools">
+              <button id="toggleNoteSearch" class="notehub-btn">BUKA SEARCH</button>
+              <button id="resetNotesBtn" class="notehub-btn">RESET</button>
+              <select id="noteCategoryFilter" class="notehub-select"><option value="all">SEMUA KATEGORI</option><option value="PK CS">PK CS</option><option value="UMUM">UMUM</option><option value="PENTING">PENTING</option></select>
+              <button id="moveNotesBtn" class="notehub-btn">MOVE TABLE</button>
+              <button id="newNoteBtn" class="notehub-btn primary">＋ NOTE</button>
+            </div>
+          </div>
+          <div id="noteSearchRow" class="note-search-row hidden"><input id="noteSearch" class="note-search" placeholder="Cari judul atau isi catatan..."></div>
+          <div class="note-board-head"><div><h1>Board Notepad</h1><p id="noteBoardMeta">Kelola catatan dengan kartu warna-warni.</p></div><span id="noteCountBadge" class="note-count-badge">0 NOTE</span></div>
+          <div id="noteGrid" class="note-grid note-board-grid"></div>
         </section>
 
         <section id="page-prediksi" class="page">
@@ -596,6 +640,8 @@
       <input id="noteId" type="hidden">
       <div class="field"><label>Judul</label><input id="noteTitle" required placeholder="Judul catatan"></div>
       <div class="field"><label>Isi catatan</label><textarea id="noteContent" required rows="7" placeholder="Tulis isi catatan..."></textarea></div>
+      <div class="field"><label>Kategori</label><select id="noteCategory"><option value="PK CS">PK CS</option><option value="UMUM">UMUM</option><option value="PENTING">PENTING</option></select></div>
+      <div class="field"><label>Link gambar (opsional)</label><input id="noteImage" placeholder="https://..."></div>
       <div class="field"><label>Warna kartu</label><select id="noteColor"><option value="pink">Pink</option><option value="peach">Peach</option><option value="lilac">Lilac</option><option value="mint">Mint</option></select></div>
       <div class="modal-actions"><button type="button" class="btn btn-soft" data-close="noteModal">Batal</button><button class="btn btn-pink" type="submit">Simpan Catatan</button></div>
     </form>
@@ -692,19 +738,37 @@
       $("#statImages").textContent=images.length;
     }
 
+    let noteMoveMode=false;
+    function noteCategoryOptions(){
+      return ["PK CS","UMUM","PENTING"];
+    }
     function renderNotes(){
-      const q=($("#noteSearch").value||"").toLowerCase();
-      const filtered=notes.filter(n=>`${n.title} ${n.content}`.toLowerCase().includes(q));
+      const q=($("#noteSearch")?.value||"").toLowerCase();
+      const cat=$("#noteCategoryFilter")?.value||"all";
+      const sorted=[...notes].sort((a,b)=>(a.sortOrder??999999)-(b.sortOrder??999999) || (b.updatedAt||0)-(a.updatedAt||0));
+      const filtered=sorted.filter(n=>{
+        const searchOk=`${n.title||""} ${n.content||""} ${n.category||""}`.toLowerCase().includes(q);
+        return searchOk&&(cat==="all"||(n.category||"PK CS")===cat);
+      });
+      $("#noteCountBadge").textContent=`${filtered.length} NOTE`;
+      $("#noteBoardMeta").textContent=noteMoveMode?"Mode pindah aktif: tarik kartu untuk mengubah posisi.":"Kelola catatan dengan kartu warna-warni.";
+      $("#noteGrid").classList.toggle("move-mode",noteMoveMode);
       $("#noteGrid").innerHTML = filtered.length ? filtered.map(n=>`
-        <article class="note ${safe(n.color||"pink")}">
+        <article class="note ${safe(n.color||"pink")}" draggable="${noteMoveMode}" data-note-card="${safe(n.id)}">
+          <span class="note-pin"></span>
+          <span class="note-category">${safe(n.category||"PK CS")}</span>
           <h3>${safe(n.title)}</h3>
+          ${n.imageUrl?`<img class="note-board-image" src="${safe(n.imageUrl)}" alt="${safe(n.title)}" onerror="this.remove()">`:""}
           <p>${safe(n.content)}</p>
-          <small>${n.updatedAtText || "Baru saja"}</small>
-          <div class="note-actions">
-            <button class="mini" data-edit-note="${n.id}">Edit</button>
-            <button class="mini" data-delete-note="${n.id}">Hapus</button>
+          <div class="note-board-footer"><small>${safe(n.updatedAtText||"Baru saja")}</small>
+            <div class="note-icon-actions">
+              <button class="note-icon-btn" title="Edit" data-edit-note="${safe(n.id)}">✎</button>
+              <button class="note-icon-btn" title="Salin" data-copy-note="${safe(n.id)}">✿</button>
+              <button class="note-icon-btn" title="Ganti gambar" data-note-image="${safe(n.id)}">▧</button>
+              <button class="note-icon-btn" title="Hapus" data-delete-note="${safe(n.id)}">🗑</button>
+            </div>
           </div>
-        </article>`).join("") : `<div class="empty">Belum ada catatan. Tekan <b>Catatan Baru</b> untuk mulai.</div>`;
+        </article>`).join("") : `<div class="empty">Belum ada catatan yang cocok.</div>`;
       updateStats();
     }
 
@@ -751,12 +815,12 @@
       }
       if(data.id){
         await update(ref(db, `dashboardndy30/notes/${data.id}`), {
-          title:data.title, content:data.content, color:data.color, updatedAt:Date.now()
+          title:data.title, content:data.content, color:data.color, category:data.category||"PK CS", imageUrl:data.imageUrl||"", sortOrder:data.sortOrder??Date.now(), updatedAt:Date.now()
         });
       } else {
         const newRef = push(ref(db, "dashboardndy30/notes"));
         await set(newRef, {
-          title:data.title, content:data.content, color:data.color, updatedAt:Date.now()
+          title:data.title, content:data.content, color:data.color, category:data.category||"PK CS", imageUrl:data.imageUrl||"", sortOrder:data.sortOrder??Date.now(), updatedAt:Date.now()
         });
       }
     }
@@ -880,26 +944,25 @@
     $$("[data-go]").forEach(b=>b.addEventListener("click",()=>switchPage(b.dataset.go)));
     $("#noteSearch").addEventListener("input",renderNotes);
 
-    $("#newNoteBtn").addEventListener("click",()=>{ $("#noteForm").reset();$("#noteId").value="";$("#noteModalTitle").textContent="Catatan Baru";openModal("noteModal");});
+    $("#newNoteBtn").addEventListener("click",()=>{ $("#noteForm").reset();$("#noteId").value="";$("#noteCategory").value=$("#noteCategoryFilter").value==="all"?"PK CS":$("#noteCategoryFilter").value;$("#noteModalTitle").textContent="Catatan Baru";openModal("noteModal");});
     $("#noteForm").addEventListener("submit",async(e)=>{
       e.preventDefault();
-      const submitBtn = e.submitter || $("#noteForm button[type='submit']");
-      submitBtn.disabled = true;
+      const submitBtn=e.submitter||$("#noteForm button[type='submit']");
+      submitBtn.disabled=true;
       try{
+        const existing=notes.find(n=>n.id===$("#noteId").value);
         await saveNote({
           id:$("#noteId").value,
           title:$("#noteTitle").value.trim(),
           content:$("#noteContent").value.trim(),
-          color:$("#noteColor").value
+          category:$("#noteCategory").value,
+          imageUrl:$("#noteImage").value.trim(),
+          color:$("#noteColor").value,
+          sortOrder:existing?.sortOrder??Date.now()
         });
-        closeModal("noteModal");
-        toast("Catatan tersimpan.");
-      }catch(err){
-        console.error("Gagal menyimpan catatan:", err);
-        toast("Gagal menyimpan. Cek koneksi atau Rules Realtime Database.");
-      }finally{
-        submitBtn.disabled = false;
-      }
+        closeModal("noteModal");toast("Catatan tersimpan.");
+      }catch(err){console.error(err);toast("Gagal menyimpan catatan. Cek koneksi atau Rules.");}
+      finally{submitBtn.disabled=false;}
     });
 $("#saveCharacterBtn").addEventListener("click",async()=>{
       const url=$("#characterUrl").value.trim();
@@ -979,8 +1042,57 @@ $("#saveCharacterBtn").addEventListener("click",async()=>{
       finally{btn.disabled=false;}
     });
 
+
+    $("#toggleNoteSearch")?.addEventListener("click",()=>{
+      $("#noteSearchRow").classList.toggle("hidden");
+      if(!$("#noteSearchRow").classList.contains("hidden")) $("#noteSearch").focus();
+    });
+    $("#resetNotesBtn")?.addEventListener("click",()=>{
+      $("#noteSearch").value="";$("#noteCategoryFilter").value="all";renderNotes();toast("Filter notepad direset.");
+    });
+    $("#noteCategoryFilter")?.addEventListener("change",renderNotes);
+    $("#noteSearch")?.addEventListener("input",renderNotes);
+    $("#moveNotesBtn")?.addEventListener("click",()=>{
+      noteMoveMode=!noteMoveMode;
+      $("#moveNotesBtn").classList.toggle("move-on",noteMoveMode);
+      $("#moveNotesBtn").textContent=noteMoveMode?"SELESAI PINDAH":"MOVE TABLE";
+      renderNotes();
+      toast(noteMoveMode?"Tarik kartu untuk memindahkan posisi.":"Posisi kartu disimpan.");
+    });
+    async function saveNoteOrder(){
+      const ids=[...$("#noteGrid").querySelectorAll("[data-note-card]")].map(el=>el.dataset.noteCard);
+      const ordered=ids.map(id=>notes.find(n=>n.id===id)).filter(Boolean);
+      ordered.forEach((n,i)=>n.sortOrder=i+1);
+      if(previewMode){localSet("ndy30Notes",notes);return;}
+      await Promise.all(ordered.map(n=>update(ref(db,`dashboardndy30/notes/${n.id}`),{sortOrder:n.sortOrder})));
+    }
+    $("#noteGrid")?.addEventListener("dragstart",e=>{
+      if(!noteMoveMode)return;
+      const card=e.target.closest("[data-note-card]");if(!card)return;
+      card.classList.add("dragging");e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",card.dataset.noteCard);
+    });
+    $("#noteGrid")?.addEventListener("dragend",e=>{
+      e.target.closest("[data-note-card]")?.classList.remove("dragging");
+      $$("#noteGrid .drop-target").forEach(x=>x.classList.remove("drop-target"));
+    });
+    $("#noteGrid")?.addEventListener("dragover",e=>{
+      if(!noteMoveMode)return;e.preventDefault();
+      const card=e.target.closest("[data-note-card]");if(card)card.classList.add("drop-target");
+    });
+    $("#noteGrid")?.addEventListener("dragleave",e=>e.target.closest("[data-note-card]")?.classList.remove("drop-target"));
+    $("#noteGrid")?.addEventListener("drop",async e=>{
+      if(!noteMoveMode)return;e.preventDefault();
+      const target=e.target.closest("[data-note-card]"),dragging=$("#noteGrid .dragging");
+      if(!target||!dragging||target===dragging)return;
+      target.classList.remove("drop-target");
+      target.parentNode.insertBefore(dragging,target);
+      try{await saveNoteOrder();toast("Posisi catatan disimpan.");}catch(err){console.error(err);toast("Gagal menyimpan posisi.");}
+    });
+
     document.addEventListener("click",async(e)=>{
-      const edit=e.target.closest("[data-edit-note]"); if(edit){const n=notes.find(x=>x.id===edit.dataset.editNote);if(!n)return;$("#noteId").value=n.id;$("#noteTitle").value=n.title;$("#noteContent").value=n.content;$("#noteColor").value=n.color||"pink";$("#noteModalTitle").textContent="Edit Catatan";openModal("noteModal");}
+      const edit=e.target.closest("[data-edit-note]"); if(edit){const n=notes.find(x=>x.id===edit.dataset.editNote);if(!n)return;$("#noteId").value=n.id;$("#noteTitle").value=n.title||"";$("#noteContent").value=n.content||"";$("#noteCategory").value=n.category||"PK CS";$("#noteImage").value=n.imageUrl||"";$("#noteColor").value=n.color||"pink";$("#noteModalTitle").textContent="Edit Catatan";openModal("noteModal");}
+      const copyNote=e.target.closest("[data-copy-note]");if(copyNote){const n=notes.find(x=>x.id===copyNote.dataset.copyNote);if(n){await navigator.clipboard.writeText(`${n.title}\n\n${n.content}`);toast("Catatan disalin.");}}
+      const noteImage=e.target.closest("[data-note-image]");if(noteImage){const n=notes.find(x=>x.id===noteImage.dataset.noteImage);if(n){const url=prompt("Masukkan link gambar untuk catatan ini:",n.imageUrl||"");if(url!==null){try{await saveNote({...n,imageUrl:url.trim(),category:n.category||"PK CS",sortOrder:n.sortOrder});toast("Gambar catatan diperbarui.");}catch(err){toast("Gagal memperbarui gambar.");}}}}
       const del=e.target.closest("[data-delete-note]");if(del) await removeNote(del.dataset.deleteNote);
       const sel=e.target.closest("[data-select-prediction]");if(sel){selectedPredictionId=sel.dataset.selectPrediction;renderPredictions();}
       const dp=e.target.closest("#deleteSelectedPrediction");if(dp&&selectedPredictionId)await removePrediction(selectedPredictionId);
