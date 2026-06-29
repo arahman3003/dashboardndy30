@@ -503,6 +503,14 @@
     .note-board-grid.move-mode .note{cursor:grab;outline:2px dashed rgba(224,44,123,.55);outline-offset:3px}.note-board-grid.move-mode .note:active{cursor:grabbing}.note-board-grid .note.dragging{opacity:.45}.note-board-grid .note.drop-target{outline:3px solid #5a9cf1;outline-offset:4px}
     @media(max-width:800px){.notehub-top{align-items:flex-start}.notehub-tools{width:100%}.notehub-btn,.notehub-select{flex:1}.note-board-grid{columns:2 220px}}@media(max-width:560px){.note-board-grid{columns:1}.notehub-btn,.notehub-select{flex:1 1 46%}.note-board-head{align-items:flex-start;flex-direction:column}}
 
+
+    /* FORM CATATAN NORMAL — GAMBAR HANYA DARI IKON KARTU */
+    #noteModal .modal-box{max-width:540px}
+    #noteModal .modal-box h3{font-size:20px}
+    #noteModal .field label{font-size:12px}
+    #noteModal textarea{min-height:155px}
+    .note-image-modal-box{max-width:530px!important}
+
 </style>
 </head>
 <body>
@@ -641,9 +649,8 @@
       <div class="field"><label>Judul</label><input id="noteTitle" required placeholder="Judul catatan"></div>
       <div class="field"><label>Isi catatan</label><textarea id="noteContent" required rows="7" placeholder="Tulis isi catatan..."></textarea></div>
       <div class="field"><label>Kategori</label><select id="noteCategory"><option value="PK CS">PK CS</option><option value="UMUM">UMUM</option><option value="PENTING">PENTING</option></select></div>
-      <div class="field"><label>Link gambar (opsional)</label><input id="noteImage" placeholder="https://..."></div>
       <div class="field"><label>Warna kartu</label><select id="noteColor"><option value="pink">Pink</option><option value="peach">Peach</option><option value="lilac">Lilac</option><option value="mint">Mint</option></select></div>
-      <div class="modal-actions"><button type="button" class="btn btn-soft" data-close="noteModal">Batal</button><button class="btn btn-pink" type="submit">Simpan Catatan</button></div>
+      <div class="modal-actions"><button type="reset" id="resetNoteForm" class="btn btn-soft">Reset</button><button class="btn btn-pink" type="submit">Simpan Catatan</button></div>
     </form>
   </div>
 
@@ -654,6 +661,27 @@
       <div class="field"><label>Pasaran</label><select id="predictionMarket" required></select></div>
       <div class="field"><label>Isi / hasil prediksi</label><textarea id="predictionContent" required rows="9" placeholder="Tulis hasil prediksi pasaran di sini..."></textarea></div>
       <div class="modal-actions"><button type="button" class="btn btn-soft" data-close="predictionModal">Batal</button><button class="btn btn-pink" type="submit">Simpan Prediksi</button></div>
+    </form>
+  </div>
+
+
+  <div id="noteImageModal" class="modal">
+    <form id="noteImageForm" class="modal-box note-image-modal-box">
+      <div class="modal-actions" style="justify-content:space-between;margin:0 0 12px">
+        <h3 style="margin:0">Tambah Gambar Catatan</h3>
+        <button type="button" class="btn btn-soft" data-close="noteImageModal">X</button>
+      </div>
+      <input id="noteImageTargetId" type="hidden">
+      <div class="field">
+        <label>Pilih gambar dari perangkat</label>
+        <input id="noteImageFile" class="upload-file" type="file" accept="image/*" required>
+      </div>
+      <p class="upload-help">Pilih gambar langsung dari perangkat. File akan diperkecil otomatis agar tetap ringan saat disimpan.</p>
+      <div id="noteImagePreview" class="image-preview">Preview gambar akan tampil di sini</div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-soft" data-close="noteImageModal">Batal</button>
+        <button class="btn btn-pink" type="submit">Simpan Gambar</button>
+      </div>
     </form>
   </div>
 
@@ -944,7 +972,8 @@
     $$("[data-go]").forEach(b=>b.addEventListener("click",()=>switchPage(b.dataset.go)));
     $("#noteSearch").addEventListener("input",renderNotes);
 
-    $("#newNoteBtn").addEventListener("click",()=>{ $("#noteForm").reset();$("#noteId").value="";$("#noteCategory").value=$("#noteCategoryFilter").value==="all"?"PK CS":$("#noteCategoryFilter").value;$("#noteModalTitle").textContent="Catatan Baru";openModal("noteModal");});
+    $("#newNoteBtn").addEventListener("click",()=>{ $("#noteForm").reset();$("#noteId").value="";$("#noteCategory").value=$("#noteCategoryFilter").value==="all"?"PK CS":$("#noteCategoryFilter").value;$("#noteModalTitle").textContent="Tambah Catatan";openModal("noteModal");});
+    $("#resetNoteForm")?.addEventListener("click",()=>{setTimeout(()=>{$("#noteId").value="";$("#noteCategory").value="PK CS";},0);});
     $("#noteForm").addEventListener("submit",async(e)=>{
       e.preventDefault();
       const submitBtn=e.submitter||$("#noteForm button[type='submit']");
@@ -956,7 +985,7 @@
           title:$("#noteTitle").value.trim(),
           content:$("#noteContent").value.trim(),
           category:$("#noteCategory").value,
-          imageUrl:$("#noteImage").value.trim(),
+          imageUrl:existing?.imageUrl||"",
           color:$("#noteColor").value,
           sortOrder:existing?.sortOrder??Date.now()
         });
@@ -1089,10 +1118,40 @@ $("#saveCharacterBtn").addEventListener("click",async()=>{
       try{await saveNoteOrder();toast("Posisi catatan disimpan.");}catch(err){console.error(err);toast("Gagal menyimpan posisi.");}
     });
 
+
+    function previewNoteImage(url){
+      $("#noteImagePreview").innerHTML=url?`<img src="${safe(url)}" alt="Preview gambar catatan">`:"Preview gambar akan tampil di sini";
+    }
+$("#noteImageFile")?.addEventListener("change",async e=>{
+      const file=e.target.files?.[0]; if(!file)return;
+      try{
+        window.__noteImageDataUrl=await compressImage(file);
+        $("#noteImageUrl").value="";
+        previewNoteImage(window.__noteImageDataUrl);
+        toast("File gambar siap disimpan.");
+      }catch(err){console.error(err);toast("Gagal memproses file gambar.");}
+    });
+    $("#noteImageForm")?.addEventListener("submit",async e=>{
+      e.preventDefault();
+      const noteId=$("#noteImageTargetId").value;
+      const n=notes.find(x=>x.id===noteId);
+      const url=window.__noteImageDataUrl||"";
+      if(!n){toast("Catatan tidak ditemukan.");return;}
+      if(!url){toast("Pilih gambar dari perangkat terlebih dahulu.");return;}
+      const btn=e.submitter||$("#noteImageForm button[type='submit']");
+      btn.disabled=true;
+      try{
+        await saveNote({...n,imageUrl:url,category:n.category||"PK CS",sortOrder:n.sortOrder});
+        closeModal("noteImageModal");
+        toast("Gambar catatan diperbarui.");
+      }catch(err){console.error(err);toast("Gagal menyimpan gambar catatan.");}
+      finally{btn.disabled=false;}
+    });
+
     document.addEventListener("click",async(e)=>{
-      const edit=e.target.closest("[data-edit-note]"); if(edit){const n=notes.find(x=>x.id===edit.dataset.editNote);if(!n)return;$("#noteId").value=n.id;$("#noteTitle").value=n.title||"";$("#noteContent").value=n.content||"";$("#noteCategory").value=n.category||"PK CS";$("#noteImage").value=n.imageUrl||"";$("#noteColor").value=n.color||"pink";$("#noteModalTitle").textContent="Edit Catatan";openModal("noteModal");}
+      const edit=e.target.closest("[data-edit-note]"); if(edit){const n=notes.find(x=>x.id===edit.dataset.editNote);if(!n)return;$("#noteId").value=n.id;$("#noteTitle").value=n.title||"";$("#noteContent").value=n.content||"";$("#noteCategory").value=n.category||"PK CS";$("#noteColor").value=n.color||"pink";$("#noteModalTitle").textContent="Edit Catatan";openModal("noteModal");}
       const copyNote=e.target.closest("[data-copy-note]");if(copyNote){const n=notes.find(x=>x.id===copyNote.dataset.copyNote);if(n){await navigator.clipboard.writeText(`${n.title}\n\n${n.content}`);toast("Catatan disalin.");}}
-      const noteImage=e.target.closest("[data-note-image]");if(noteImage){const n=notes.find(x=>x.id===noteImage.dataset.noteImage);if(n){const url=prompt("Masukkan link gambar untuk catatan ini:",n.imageUrl||"");if(url!==null){try{await saveNote({...n,imageUrl:url.trim(),category:n.category||"PK CS",sortOrder:n.sortOrder});toast("Gambar catatan diperbarui.");}catch(err){toast("Gagal memperbarui gambar.");}}}}
+      const noteImage=e.target.closest("[data-note-image]");if(noteImage){const n=notes.find(x=>x.id===noteImage.dataset.noteImage);if(n){$("#noteImageTargetId").value=n.id;$("#noteImageFile").value="";window.__noteImageDataUrl="";$("#noteImagePreview").innerHTML=n.imageUrl?`<img src="${safe(n.imageUrl)}" alt="Preview gambar lama">`:"Preview gambar akan tampil di sini";openModal("noteImageModal");}}
       const del=e.target.closest("[data-delete-note]");if(del) await removeNote(del.dataset.deleteNote);
       const sel=e.target.closest("[data-select-prediction]");if(sel){selectedPredictionId=sel.dataset.selectPrediction;renderPredictions();}
       const dp=e.target.closest("#deleteSelectedPrediction");if(dp&&selectedPredictionId)await removePrediction(selectedPredictionId);
