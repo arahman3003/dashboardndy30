@@ -221,6 +221,95 @@
     @media(max-width:640px){
       #authScreen{padding:14px}.login-card{border-radius:25px}.login-visual{padding:30px}.login-form-wrap{padding:31px 22px}.topbar{padding:0 14px}.top-actions .user-chip{display:none}.content{padding:16px}.hero{padding:25px;border-radius:25px}.hero h1{font-size:40px}.grid-stats,.cards{grid-template-columns:1fr}.section-head{align-items:flex-start;flex-direction:column}.board-top{align-items:flex-start;flex-direction:column}.search{width:100%;min-width:0}.toolbar{width:100%}.toolbar .btn{flex:1}.note-grid{columns:1}.ticker{border-radius:13px}.character-card{height:245px;width:188px}
     }
+  
+    /* ===== NAVIGASI HEADER HORIZONTAL — TANPA SIDEBAR KIRI ===== */
+    .topbar{
+      height:auto;
+      min-height:82px;
+      padding:12px 30px;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:12px 18px;
+    }
+    .top-brand{flex:0 0 auto}
+    .top-actions{margin-left:auto}
+    .shell{
+      display:block;
+      min-height:0;
+    }
+    .sidebar{
+      position:sticky;
+      top:0;
+      z-index:19;
+      width:100%;
+      height:auto;
+      min-height:auto;
+      overflow:visible;
+      padding:0 30px 13px;
+      background:rgba(255,255,255,.90);
+      border-bottom:1px solid rgba(244,207,224,.88);
+      box-shadow:0 10px 24px rgba(130,36,81,.05);
+      backdrop-filter:blur(16px);
+    }
+    .side-label,.side-box{display:none!important}
+    .nav{
+      display:flex;
+      align-items:center;
+      gap:9px;
+      overflow-x:auto;
+      overflow-y:hidden;
+      scrollbar-width:thin;
+      padding:1px 0 3px;
+    }
+    .nav-btn{
+      width:auto;
+      flex:0 0 auto;
+      gap:8px;
+      padding:11px 15px;
+      border:1px solid #f3cade;
+      background:#fff8fb;
+      color:#783453;
+      border-radius:999px;
+      font-size:13px;
+      box-shadow:none;
+    }
+    .nav-btn span:first-child{font-size:16px;width:auto}
+    .nav-btn:hover,.nav-btn.active{
+      background:linear-gradient(135deg,#f26fa9,#cf397a);
+      color:#fff;
+      border-color:rgba(255,255,255,.45);
+      box-shadow:0 9px 19px rgba(225,62,130,.2);
+    }
+    .content{
+      padding:26px 30px 34px;
+    }
+    .hamburger{display:none!important}
+    @media(max-width:970px){
+      .topbar{padding:11px 17px}
+      .sidebar{
+        position:sticky;
+        top:0;
+        transform:none!important;
+        width:100%;
+        height:auto;
+        padding:0 17px 11px;
+        box-shadow:0 8px 18px rgba(130,36,81,.05);
+      }
+      .content{padding:18px}
+      .nav{gap:8px}
+      .nav-btn{padding:10px 13px;font-size:12px}
+    }
+    @media(max-width:640px){
+      .topbar{min-height:68px}
+      .top-brand{font-size:14px}
+      .top-brand small{display:none}
+      .logo-mark{width:34px;height:34px;border-radius:12px}
+      .top-actions .btn{padding:10px 12px;font-size:12px}
+      .sidebar{padding:0 13px 10px}
+      .content{padding:14px}
+      .nav-btn{padding:10px 12px}
+    }
+
   </style>
 </head>
 <body>
@@ -256,16 +345,15 @@
     </header>
 
     <div class="shell">
-      <aside id="sidebar" class="sidebar">
+      <nav id="sidebar" class="sidebar" aria-label="Menu utama">
         <div class="side-label">Menu Utama</div>
-        <nav class="nav">
+        <div class="nav">
           <button class="nav-btn active" data-page="dashboard"><span>⌂</span><span>Dashboard Awal</span></button>
           <button class="nav-btn" data-page="notepad"><span>✎</span><span>Note Pad</span></button>
           <button class="nav-btn" data-page="prediksi"><span>✦</span><span>Prediksi</span></button>
           <button class="nav-btn" data-page="gambar"><span>▧</span><span>Gambar</span></button>
-        </nav>
-        <div class="side-box"><strong>Dashboardndy30</strong><p>Menu bergerak, desain feminin, dan data siap disambungkan ke Firebase.</p></div>
-      </aside>
+        </div>
+      </nav>
 
       <section class="content">
         <section id="page-dashboard" class="page active">
