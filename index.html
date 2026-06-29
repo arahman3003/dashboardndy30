@@ -582,7 +582,7 @@
       updateStats();
     }
 
-    function renderPredictions(){
+    function renderPredictionsLegacy(){
       $("#predictionList").innerHTML = predictions.length ? predictions.map(p=>`
         <button class="prediction-item ${selectedPredictionId===p.id?"active":""}" data-select-prediction="${p.id}">
           ${safe(p.title)}
@@ -636,7 +636,7 @@
       }
       await remove(ref(db, `dashboardndy30/notes/${noteId}`));
     }
-    async function savePrediction(data){
+    async function savePredictionLegacy(data){
       if(previewMode){
         const item = {...data, id:id(), createdAt:Date.now()};
         predictions.unshift(item);
@@ -647,7 +647,7 @@
       const newRef = push(ref(db, "dashboardndy30/predictions"));
       await set(newRef, {...data, createdAt:Date.now()});
     }
-    async function removePrediction(predId){
+    async function removePredictionLegacy(predId){
       if(!confirm("Hapus data ini?")) return;
       if(previewMode){
         predictions = predictions.filter(x => x.id !== predId);
@@ -769,7 +769,6 @@
         submitBtn.disabled = false;
       }
     });
-openModal("predictionModal");});
 $("#addImageBtn").addEventListener("click",async()=>{
       let title=$("#imageTitle").value.trim(),url=$("#imageUrl").value.trim();
       if(!title||!url){toast("Isi nama dan link gambar dahulu.");return;}
