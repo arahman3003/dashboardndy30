@@ -611,6 +611,31 @@
       .note-board-grid{columns:1!important}
     }
 
+
+    /* PALET WARNA STICKY NOTE — TANPA DROPDOWN */
+    .note-color-palette{display:flex;gap:8px;flex-wrap:wrap;padding-top:2px}
+    .note-color-dot{width:24px;height:24px;border-radius:50%;border:1px solid rgba(67,22,49,.18);cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.62)}
+    .note-color-dot.active{outline:2px solid #3f1732;outline-offset:2px}
+    .note-color-dot.pink{background:#f1a1c5}.note-color-dot.peach{background:#f7c38d}.note-color-dot.lilac{background:#cfb2ec}.note-color-dot.mint{background:#a9e2c1}
+    .note-color-dot.yellow{background:#f6e47a}.note-color-dot.sky{background:#a6dff0}.note-color-dot.lavender{background:#d6c6fb}.note-color-dot.coral{background:#f5a99d}
+    .note-color-dot.cream{background:#f8e5bb}.note-color-dot.rose{background:#eeb2d0}.note-color-dot.aqua{background:#9ee5dd}.note-color-dot.grape{background:#b89ad8}
+    .note-board-grid .note.yellow{background:linear-gradient(145deg,#fff0a5,#f1d965)}
+    .note-board-grid .note.sky{background:linear-gradient(145deg,#c8edf7,#94d5e9)}
+    .note-board-grid .note.lavender{background:linear-gradient(145deg,#e3d8ff,#cbb6f5)}
+    .note-board-grid .note.coral{background:linear-gradient(145deg,#ffd0ca,#f39f95)}
+    .note-board-grid .note.cream{background:linear-gradient(145deg,#fff0d2,#f6d59d)}
+    .note-board-grid .note.rose{background:linear-gradient(145deg,#f9cbe0,#e9a6c7)}
+    .note-board-grid .note.aqua{background:linear-gradient(145deg,#c7f6ef,#96ddd2)}
+    .note-board-grid .note.grape{background:linear-gradient(145deg,#d8c5ef,#b999d8)}
+    .note-board-image{
+      display:block!important;
+      width:100%!important;
+      max-height:165px!important;
+      object-fit:cover!important;
+      margin:12px 0 2px!important;
+      border-radius:13px!important;
+    }
+
 </style>
 </head>
 <body>
@@ -749,7 +774,24 @@
       <div class="field"><label>Judul</label><input id="noteTitle" required placeholder="Judul catatan"></div>
       <div class="field"><label>Isi catatan</label><textarea id="noteContent" required rows="7" placeholder="Tulis isi catatan..."></textarea></div>
       <div class="field"><label>Kategori</label><select id="noteCategory"><option value="PK CS">PK CS</option><option value="UMUM">UMUM</option><option value="PENTING">PENTING</option></select></div>
-      <div class="field"><label>Warna kartu</label><select id="noteColor"><option value="pink">Pink</option><option value="peach">Peach</option><option value="lilac">Lilac</option><option value="mint">Mint</option></select></div>
+      <div class="field">
+        <label>Pilih Warna Sticky Note</label>
+        <input id="noteColor" type="hidden" value="pink">
+        <div id="noteColorPalette" class="note-color-palette">
+          <button type="button" class="note-color-dot pink active" data-note-color="pink" title="Pink"></button>
+          <button type="button" class="note-color-dot peach" data-note-color="peach" title="Peach"></button>
+          <button type="button" class="note-color-dot lilac" data-note-color="lilac" title="Lilac"></button>
+          <button type="button" class="note-color-dot mint" data-note-color="mint" title="Mint"></button>
+          <button type="button" class="note-color-dot yellow" data-note-color="yellow" title="Kuning"></button>
+          <button type="button" class="note-color-dot sky" data-note-color="sky" title="Biru Langit"></button>
+          <button type="button" class="note-color-dot lavender" data-note-color="lavender" title="Lavender"></button>
+          <button type="button" class="note-color-dot coral" data-note-color="coral" title="Coral"></button>
+          <button type="button" class="note-color-dot cream" data-note-color="cream" title="Cream"></button>
+          <button type="button" class="note-color-dot rose" data-note-color="rose" title="Rose"></button>
+          <button type="button" class="note-color-dot aqua" data-note-color="aqua" title="Aqua"></button>
+          <button type="button" class="note-color-dot grape" data-note-color="grape" title="Grape"></button>
+        </div>
+      </div>
       <div class="modal-actions"><button type="reset" id="resetNoteForm" class="btn btn-soft">Reset</button><button class="btn btn-pink" type="submit">Simpan Catatan</button></div>
     </form>
   </div>
@@ -886,8 +928,8 @@
           <span class="note-pin"></span>
           <span class="note-category">${safe(n.category||"PK CS")}</span>
           <h3>${safe(n.title)}</h3>
-          ${n.imageUrl?`<img class="note-board-image" src="${safe(n.imageUrl)}" alt="${safe(n.title)}" onerror="this.remove()">`:""}
           <p>${safe(n.content)}</p>
+          ${n.imageUrl?`<img class="note-board-image" src="${safe(n.imageUrl)}" alt="${safe(n.title)}" onerror="this.remove()">`:""}
           <div class="note-board-footer"><small>${safe(n.updatedAtText||"Baru saja")}</small>
             <div class="note-icon-actions">
               <button class="note-icon-btn" title="Edit" data-edit-note="${safe(n.id)}">✎</button>
@@ -1072,8 +1114,17 @@
     $$("[data-go]").forEach(b=>b.addEventListener("click",()=>switchPage(b.dataset.go)));
     $("#noteSearch").addEventListener("input",renderNotes);
 
-    $("#newNoteBtn").addEventListener("click",()=>{ $("#noteForm").reset();$("#noteId").value="";$("#noteCategory").value=$("#noteCategoryFilter").value==="all"?"PK CS":$("#noteCategoryFilter").value;$("#noteModalTitle").textContent="Tambah Catatan";openModal("noteModal");});
-    $("#resetNoteForm")?.addEventListener("click",()=>{setTimeout(()=>{$("#noteId").value="";$("#noteCategory").value="PK CS";},0);});
+    function setNoteColor(color){
+      $("#noteColor").value=color||"pink";
+      $$("#noteColorPalette [data-note-color]").forEach(btn=>btn.classList.toggle("active",btn.dataset.noteColor===$("#noteColor").value));
+    }
+    $("#noteColorPalette")?.addEventListener("click",e=>{
+      const dot=e.target.closest("[data-note-color]");
+      if(dot)setNoteColor(dot.dataset.noteColor);
+    });
+
+        $("#newNoteBtn").addEventListener("click",()=>{ $("#noteForm").reset();$("#noteId").value="";$("#noteCategory").value=$("#noteCategoryFilter").value==="all"?"PK CS":$("#noteCategoryFilter").value;$("#noteModalTitle").textContent="Tambah Catatan";setNoteColor("pink");openModal("noteModal");});
+    $("#resetNoteForm")?.addEventListener("click",()=>{setTimeout(()=>{$("#noteId").value="";$("#noteCategory").value="PK CS";setNoteColor("pink");},0);});
     $("#noteForm").addEventListener("submit",async(e)=>{
       e.preventDefault();
       const submitBtn=e.submitter||$("#noteForm button[type='submit']");
@@ -1249,7 +1300,7 @@ $("#noteImageFile")?.addEventListener("change",async e=>{
     });
 
     document.addEventListener("click",async(e)=>{
-      const edit=e.target.closest("[data-edit-note]"); if(edit){const n=notes.find(x=>x.id===edit.dataset.editNote);if(!n)return;$("#noteId").value=n.id;$("#noteTitle").value=n.title||"";$("#noteContent").value=n.content||"";$("#noteCategory").value=n.category||"PK CS";$("#noteColor").value=n.color||"pink";$("#noteModalTitle").textContent="Edit Catatan";openModal("noteModal");}
+      const edit=e.target.closest("[data-edit-note]"); if(edit){const n=notes.find(x=>x.id===edit.dataset.editNote);if(!n)return;$("#noteId").value=n.id;$("#noteTitle").value=n.title||"";$("#noteContent").value=n.content||"";$("#noteCategory").value=n.category||"PK CS";setNoteColor(n.color||"pink");$("#noteModalTitle").textContent="Edit Catatan";openModal("noteModal");}
       const copyNote=e.target.closest("[data-copy-note]");if(copyNote){const n=notes.find(x=>x.id===copyNote.dataset.copyNote);if(n){await navigator.clipboard.writeText(`${n.title}\n\n${n.content}`);toast("Catatan disalin.");}}
       const noteImage=e.target.closest("[data-note-image]");if(noteImage){const n=notes.find(x=>x.id===noteImage.dataset.noteImage);if(n){$("#noteImageTargetId").value=n.id;$("#noteImageFile").value="";window.__noteImageDataUrl="";$("#noteImagePreview").innerHTML=n.imageUrl?`<img src="${safe(n.imageUrl)}" alt="Preview gambar lama">`:"Preview gambar akan tampil di sini";openModal("noteImageModal");}}
       const del=e.target.closest("[data-delete-note]");if(del) await removeNote(del.dataset.deleteNote);
