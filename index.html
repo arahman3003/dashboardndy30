@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboardndy30</title>
+  <style>
+    :root{
+      --pink-50:#fff7fb;
+      --pink-100:#ffeaf3;
+      --pink-200:#ffd1e4;
+      --pink-300:#f9a8cb;
+      --pink-400:#f475ad;
+      --pink-500:#e94d91;
+      --pink-600:#cc2f75;
+      --plum:#351429;
+      --plum-2:#521c3b;
+      --ink:#2f1830;
+      --muted:#8d647b;
+      --line:#f4cfe0;
+      --card:#ffffff;
+      --shadow:0 18px 46px rgba(119, 30, 76, .13);
+      --radius:26px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:var(--ink);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:
+        radial-gradient(circle at 83% 4%,rgba(244,117,173,.20),transparent 25%),
+        radial-gradient(circle at 12% 90%,rgba(255,190,220,.48),transparent 27%),
+        var(--pink-50);
+    }
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer}
+    .hidden{display:none!important}
+
+    /* Login */
+    #authScreen{
+      min-height:100vh;
+      padding:26px;
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      position:relative;
+      background:
+        radial-gradient(circle at 10% 8%,rgba(255,255,255,.78),transparent 25%),
+        radial-gradient(circle at 88% 15%,rgba(240,89,153,.36),transparent 28%),
+        linear-gradient(135deg,#ffeaf3 0%,#fff8fb 44%,#f9d1e3 100%);
+    }
+    .floating{position:absolute;border-radius:999px;filter:blur(.2px);opacity:.7;animation:float 7s ease-in-out infinite}
+    .floating.one{width:190px;height:190px;background:#f8b6d3;left:-52px;top:62px}
+    .floating.two{width:118px;height:118px;background:#f99cc5;right:10%;bottom:8%;animation-delay:-2.3s}
+    .floating.three{width:64px;height:64px;background:#fff;right:19%;top:16%;animation-delay:-4.5s}
+    @keyframes float{50%{transform:translateY(-16px) translateX(7px) rotate(8deg)}}
+    .login-card{
+      position:relative;z-index:2;width:min(100%,1040px);min-height:640px;
+      display:grid;grid-template-columns:1.05fr .95fr;overflow:hidden;border-radius:34px;
+      background:rgba(255,255,255,.74);border:1px solid rgba(255,255,255,.92);
+      box-shadow:0 34px 90px rgba(104,31,69,.22);backdrop-filter:blur(18px);
+    }
+    .login-visual{
+      position:relative;isolation:isolate;overflow:hidden;padding:46px;
+      background:linear-gradient(150deg,#41162f 0%,#7d244f 54%,#e34f91 100%);
+      color:#fff;
+    }
+    .login-visual::after{
+      content:"";position:absolute;inset:auto -80px -110px auto;width:390px;height:390px;border-radius:50%;
+      background:rgba(255,255,255,.12);z-index:-1
+    }
+    .login-visual .badge{
+      width:max-content;padding:9px 13px;border-radius:999px;
+      font-size:11px;font-weight:900;letter-spacing:.9px;text-transform:uppercase;
+      background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22)
+    }
+    .login-visual h1{font-size:clamp(38px,5vw,62px);line-height:.96;margin:82px 0 18px;letter-spacing:-2px}
+    .login-visual p{max-width:360px;line-height:1.75;font-size:15px;color:#fdeaf4}
+    .heart-line{display:flex;align-items:center;gap:10px;margin-top:54px;color:#ffd9e9;font-size:12px;font-weight:800}
+    .heart-line:before{content:"✦";width:32px;height:32px;display:grid;place-items:center;border-radius:12px;background:rgba(255,255,255,.13)}
+    .login-form-wrap{display:flex;align-items:center;padding:54px 52px}
+    .login-form{width:100%;max-width:350px;margin:auto}
+    .login-logo{display:flex;align-items:center;gap:11px;font-weight:950;color:var(--plum);letter-spacing:-.4px}
+    .logo-mark{width:42px;height:42px;border-radius:15px;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,#f875b0,#cf3477);box-shadow:0 12px 24px rgba(212,50,116,.24)}
+    .login-form h2{font-size:31px;margin:42px 0 8px;letter-spacing:-1px}
+    .login-form>p{margin:0 0 28px;color:var(--muted);line-height:1.55;font-size:14px}
+    .field{margin:14px 0}
+    .field label{display:block;font-size:12px;font-weight:900;margin:0 0 8px;color:#70445d;text-transform:uppercase;letter-spacing:.7px}
+    .field input,.field textarea,.field select{
+      width:100%;border:1px solid var(--line);border-radius:15px;padding:14px 15px;outline:none;color:var(--ink);background:#fff;
+      transition:.2s;
+    }
+    .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--pink-400);box-shadow:0 0 0 4px rgba(233,77,145,.12)}
+    .btn{
+      border:0;border-radius:15px;padding:13px 17px;font-weight:900;transition:.2s;
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .btn-pink{color:#fff;background:linear-gradient(135deg,#ed5a9b,#cb2c72);box-shadow:0 13px 24px rgba(204,47,117,.26)}
+    .btn-dark{color:#fff;background:var(--plum)}
+    .btn-soft{color:#9e3265;background:var(--pink-100);border:1px solid var(--pink-200)}
+    .login-form .btn-pink{width:100%;margin-top:7px}
+    .preview-link{width:100%;margin-top:10px}
+    .login-hint{margin-top:17px;font-size:12px;color:#9b6d86;line-height:1.55;text-align:center}
+    .login-error{min-height:18px;margin-top:12px;text-align:center;color:#c51e62;font-size:13px;font-weight:750}
+
+    /* App */
+    #app{min-height:100vh}
+    .topbar{
+      height:76px;padding:0 30px;display:flex;align-items:center;justify-content:space-between;gap:18px;
+      position:sticky;top:0;z-index:20;background:rgba(255,255,255,.78);border-bottom:1px solid rgba(244,207,224,.88);backdrop-filter:blur(16px)
+    }
+    .top-brand{display:flex;align-items:center;gap:12px;font-weight:950;letter-spacing:-.6px}
+    .top-brand small{display:block;margin-top:2px;font-size:10px;color:#a46c8a;letter-spacing:.8px;text-transform:uppercase}
+    .top-actions{display:flex;align-items:center;gap:10px}
+    .user-chip{display:flex;align-items:center;gap:9px;padding:7px 10px 7px 7px;border:1px solid var(--line);background:#fff;border-radius:999px;font-size:12px;font-weight:850}
+    .user-dot{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#f36fa9,#a61f5d)}
+    .hamburger{display:none;width:42px;height:42px;border-radius:13px;border:1px solid var(--line);background:#fff;color:var(--pink-600);font-size:21px}
+    .shell{display:grid;grid-template-columns:258px minmax(0,1fr);min-height:calc(100vh - 76px)}
+    .sidebar{
+      background:linear-gradient(180deg,#3c142d 0%,#200b19 100%);padding:20px 14px;color:#fff;
+      position:sticky;top:76px;height:calc(100vh - 76px);overflow-y:auto;
+    }
+    .side-label{padding:8px 12px 10px;font-size:10px;color:#f0a2c5;font-weight:900;letter-spacing:1.2px;text-transform:uppercase}
+    .nav{display:grid;gap:7px}
+    .nav-btn{
+      width:100%;display:flex;align-items:center;gap:11px;border:1px solid transparent;background:transparent;color:#fbe8f1;padding:13px;border-radius:15px;font-weight:850;text-align:left;
+      transition:.22s
+    }
+    .nav-btn span:first-child{font-size:18px;width:22px;text-align:center}
+    .nav-btn:hover,.nav-btn.active{background:linear-gradient(135deg,#f26fa9,#cf397a);box-shadow:0 10px 22px rgba(248,111,169,.22);border-color:rgba(255,255,255,.17)}
+    .side-box{margin:26px 4px 4px;padding:14px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:rgba(255,255,255,.055);color:#f8c8dd}
+    .side-box strong{display:block;color:#fff;margin-bottom:6px;font-size:13px}
+    .side-box p{margin:0;font-size:12px;line-height:1.6;color:#e4b6ca}
+    .content{padding:28px;min-width:0}
+    .page{display:none;animation:pageIn .35s ease}
+    .page.active{display:block}
+    @keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .ticker{overflow:hidden;white-space:nowrap;border:1px solid var(--pink-200);background:#fff;color:#c23972;border-radius:17px;margin-bottom:24px}
+    .ticker-track{display:inline-block;min-width:100%;padding:11px 0;font-size:11px;font-weight:950;letter-spacing:.8px;text-transform:uppercase;animation:ticker 26s linear infinite}
+    @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+    .hero{
+      min-height:390px;border-radius:32px;overflow:hidden;position:relative;padding:44px;display:grid;grid-template-columns:1fr minmax(280px,390px);gap:28px;align-items:center;
+      background:
+        radial-gradient(circle at 11% 13%,rgba(255,255,255,.82),transparent 21%),
+        linear-gradient(135deg,#ffe7f1 0%,#fff9fc 49%,#f8c1d9 100%);
+      border:1px solid #fff;box-shadow:var(--shadow)
+    }
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;width:max-content;padding:8px 11px;border-radius:999px;color:#ba2e69;background:#fff;border:1px solid #f8cadd;font-size:11px;font-weight:950;letter-spacing:.7px;text-transform:uppercase}
+    .hero h1{font-size:clamp(36px,4.6vw,64px);letter-spacing:-2.5px;line-height:1.02;margin:21px 0 14px;color:#3e1730}
+    .hero h1 em{font-style:normal;color:var(--pink-600)}
+    .hero p{max-width:550px;color:#84566f;line-height:1.75;margin:0;font-size:15px}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}
+    .character-stage{height:306px;position:relative;display:grid;place-items:center}
+    .orb{position:absolute;width:260px;height:260px;border-radius:50%;background:linear-gradient(145deg,#f37cad,#eab5cf);filter:blur(.1px);animation:pulse 4.5s ease-in-out infinite}
+    @keyframes pulse{50%{transform:scale(1.06);filter:brightness(1.06)}}
+    .character-card{
+      position:relative;width:214px;height:278px;overflow:hidden;border-radius:28px;border:8px solid rgba(255,255,255,.7);
+      background:linear-gradient(155deg,#a32961,#f178aa);box-shadow:0 24px 36px rgba(147,42,89,.22);transform:rotate(3deg);animation:charFloat 5s ease-in-out infinite;
+    }
+    @keyframes charFloat{50%{transform:translateY(-12px) rotate(-2deg)}}
+    .character-card img{width:100%;height:100%;object-fit:cover;display:block}
+    .character-label{position:absolute;right:-15px;bottom:17px;padding:10px 13px;border-radius:14px;background:#fff;color:#a0235c;box-shadow:0 12px 20px rgba(85,23,52,.16);font-size:11px;font-weight:950}
+    .character-spark{position:absolute;z-index:2;color:#fff;font-size:28px;animation:spark 2.8s ease-in-out infinite}
+    .character-spark.a{top:15px;right:32px}.character-spark.b{bottom:34px;left:36px;animation-delay:-1.2s}
+    @keyframes spark{50%{transform:rotate(26deg) scale(1.24);opacity:.72}}
+    .grid-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:22px 0}
+    .stat{background:rgba(255,255,255,.82);border:1px solid rgba(250,207,226,.9);box-shadow:0 10px 24px rgba(139,36,83,.07);border-radius:22px;padding:18px}
+    .stat b{display:block;font-size:27px;color:#6a214a;letter-spacing:-1px}.stat span{display:block;margin-top:5px;color:#9a6881;font-size:12px;font-weight:750}
+    .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:15px;margin:30px 0 15px}
+    .section-head h2{margin:0;font-size:23px;letter-spacing:-.7px}
+    .section-head p{margin:5px 0 0;color:var(--muted);font-size:13px}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .feature{border:1px solid #f5d5e4;background:#fff;border-radius:22px;padding:19px;box-shadow:0 10px 26px rgba(127,35,76,.06);transition:.2s}
+    .feature:hover{transform:translateY(-4px);border-color:#ef94bd}
+    .feature-icon{width:43px;height:43px;border-radius:14px;display:grid;place-items:center;background:var(--pink-100);font-size:21px}
+    .feature h3{margin:16px 0 7px;font-size:16px}.feature p{margin:0;color:#956b80;font-size:13px;line-height:1.6}
+
+    /* Board */
+    .board-top{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+    .board-top h1{margin:0;font-size:30px;letter-spacing:-1px}
+    .board-top p{margin:6px 0 0;color:#96697f;font-size:13px}
+    .toolbar{display:flex;gap:9px;flex-wrap:wrap}
+    .search{border:1px solid var(--line);min-width:230px;border-radius:14px;padding:12px 14px;outline:0;background:#fff}
+    .note-grid{columns:4 240px;column-gap:16px}
+    .note{break-inside:avoid;margin:0 0 16px;padding:16px;border-radius:22px;position:relative;box-shadow:0 16px 25px rgba(114,30,69,.13);border:1px solid rgba(255,255,255,.58)}
+    .note::after{content:"";position:absolute;right:14px;top:14px;width:13px;height:13px;border-radius:50%;background:rgba(74,22,52,.2)}
+    .note.pink{background:linear-gradient(160deg,#ffd0e2,#f497bd)}.note.peach{background:linear-gradient(160deg,#ffe1c9,#f9b98e)}.note.lilac{background:linear-gradient(160deg,#e6d4ff,#cba9f3)}.note.mint{background:linear-gradient(160deg,#c9f4df,#99dfbd)}
+    .note h3{margin:0 18px 10px 0;font-size:14px;text-transform:uppercase;letter-spacing:.3px}.note p{white-space:pre-wrap;line-height:1.55;font-size:13px;margin:0;color:#4b223c}
+    .note small{display:block;margin-top:15px;color:rgba(67,26,51,.62);font-weight:800;font-size:11px}.note-actions{display:flex;gap:7px;margin-top:11px}.mini{border:1px solid rgba(87,22,55,.13);border-radius:10px;padding:7px 9px;background:rgba(255,255,255,.34);color:#542039;font-weight:900;font-size:12px}
+    .empty{padding:40px;border:2px dashed #efbdd5;border-radius:22px;color:#a17188;text-align:center;background:#fff}
+
+    /* Predictions */
+    .predict-layout{display:grid;grid-template-columns:340px minmax(0,1fr);gap:18px}
+    .panel{background:#fff;border:1px solid #f2d6e3;border-radius:24px;padding:17px;box-shadow:0 12px 28px rgba(116,26,68,.07)}
+    .panel-title{font-size:13px;font-weight:950;letter-spacing:.7px;color:#9d3465;text-transform:uppercase;margin:0 0 12px}
+    .prediction-list{display:grid;gap:8px;max-height:560px;overflow:auto;padding-right:2px}
+    .prediction-item{width:100%;border:1px solid #f1d1df;background:#fff9fc;border-radius:14px;padding:13px;text-align:left;font-weight:850;color:#59223f}
+    .prediction-item.active,.prediction-item:hover{border-color:#ea70a8;background:#ffe3ef}
+    .result-box{min-height:400px;border-radius:22px;padding:33px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:linear-gradient(135deg,#f89bc2 0%,#f7c1dd 48%,#cbb4f5 100%);border:1px solid rgba(255,255,255,.8)}
+    .result-box span{font-size:11px;font-weight:950;letter-spacing:1px;color:#743259;text-transform:uppercase}.result-box h2{font-size:clamp(31px,5vw,52px);margin:12px 0;letter-spacing:-1.5px;color:#3e1730}.result-box p{max-width:540px;line-height:1.75;color:#6f3153;margin:0;white-space:pre-wrap}
+    .result-actions{margin-top:24px;display:flex;gap:10px;flex-wrap:wrap}
+
+    /* Images */
+    .image-form{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}.image-form input{flex:1;min-width:220px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;outline:0}
+    .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+    .gallery-card{overflow:hidden;background:#fff;border:1px solid #f3d4e3;border-radius:20px;box-shadow:0 12px 27px rgba(110,22,65,.08)}
+    .gallery-card img{width:100%;height:195px;object-fit:cover;background:#ffe8f1;display:block}.gallery-body{padding:13px}.gallery-body b{display:block;font-size:14px;word-break:break-word}.gallery-body .gallery-meta{display:flex;justify-content:space-between;gap:8px;margin-top:12px;align-items:center}
+    .placeholder-img{display:grid!important;place-items:center;color:#a95a81;font-weight:900}
+
+    .modal{position:fixed;inset:0;background:rgba(55,12,38,.38);backdrop-filter:blur(7px);z-index:90;display:none;align-items:center;justify-content:center;padding:18px}.modal.show{display:flex}
+    .modal-box{width:min(560px,100%);background:#fff;border-radius:26px;padding:22px;box-shadow:0 28px 80px rgba(58,9,37,.25)}.modal-box h3{margin:0 0 18px}.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:14px}
+
+    .toast{position:fixed;bottom:24px;right:24px;z-index:110;transform:translateY(90px);opacity:0;transition:.25s;background:#3c152e;color:#fff;padding:12px 15px;border-radius:13px;font-size:13px;font-weight:800;box-shadow:0 15px 30px rgba(48,11,32,.22)}.toast.show{transform:none;opacity:1}
+
+    @media(max-width:970px){
+      .login-card{grid-template-columns:1fr}.login-visual{min-height:250px}.login-visual h1{margin:40px 0 12px}.heart-line{margin-top:24px}.login-form-wrap{padding:40px 30px}
+      .shell{grid-template-columns:1fr}.sidebar{position:fixed;z-index:60;left:0;top:76px;width:270px;transform:translateX(-105%);transition:.26s;height:calc(100vh - 76px);box-shadow:20px 0 50px rgba(58,9,37,.18)}.sidebar.open{transform:none}.hamburger{display:grid;place-items:center}.content{padding:22px}.hero{grid-template-columns:1fr;min-height:auto}.character-stage{height:260px}.cards{grid-template-columns:1fr 1fr}.predict-layout{grid-template-columns:1fr}.prediction-list{max-height:230px}
+    }
+    @media(max-width:640px){
+      #authScreen{padding:14px}.login-card{border-radius:25px}.login-visual{padding:30px}.login-form-wrap{padding:31px 22px}.topbar{padding:0 14px}.top-actions .user-chip{display:none}.content{padding:16px}.hero{padding:25px;border-radius:25px}.hero h1{font-size:40px}.grid-stats,.cards{grid-template-columns:1fr}.section-head{align-items:flex-start;flex-direction:column}.board-top{align-items:flex-start;flex-direction:column}.search{width:100%;min-width:0}.toolbar{width:100%}.toolbar .btn{flex:1}.note-grid{columns:1}.ticker{border-radius:13px}.character-card{height:245px;width:188px}
+    }
+  </style>
+</head>
+<body>
+  <section id="authScreen">
+    <i class="floating one"></i><i class="floating two"></i><i class="floating three"></i>
+    <div class="login-card">
+      <div class="login-visual">
+        <div class="badge">Dashboard pribadi • Ndy30</div>
+        <h1>Ruang kerja<br>yang <em>cantik</em><br>dan rapi.</h1>
+        <p>Dashboardndy30 adalah ruang pribadi untuk menyimpan ide, melihat data, serta mengelola koleksi gambar dalam satu tampilan.</p>
+        <div class="heart-line">Private workspace</div>
+      </div>
+      <div class="login-form-wrap">
+        <form id="loginForm" class="login-form">
+          <div class="login-logo"><div class="logo-mark">✦</div><div>Dashboardndy30</div></div>
+          <h2>Selamat datang</h2>
+          <p>Masuk menggunakan username pemilik dashboard.</p>
+          <div class="field"><label>Username</label><input id="loginUsername" autocomplete="username" placeholder="Masukkan username" required></div>
+          <div class="field"><label>Password</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Masukkan password" required></div>
+          <button class="btn btn-pink" type="submit">Masuk ke Dashboard <span>→</span></button>
+          <button id="previewBtn" class="btn btn-soft preview-link" type="button">Lihat Preview Desain</button>
+          <div id="loginError" class="login-error"></div>
+          <div class="login-hint">Firebase belum disambungkan? Tekan “Lihat Preview Desain” untuk melihat tampilan awal.</div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <main id="app" class="hidden">
+    <header class="topbar">
+      <div class="top-brand"><button id="hamburger" class="hamburger" aria-label="Buka menu">☰</button><div class="logo-mark">✦</div><div>Dashboardndy30<small>Private workspace</small></div></div>
+      <div class="top-actions"><div class="user-chip"><span class="user-dot">N</span><span id="userNameLabel">Ndy30</span></div><button id="logoutBtn" class="btn btn-soft">Keluar</button></div>
+    </header>
+
+    <div class="shell">
+      <aside id="sidebar" class="sidebar">
+        <div class="side-label">Menu Utama</div>
+        <nav class="nav">
+          <button class="nav-btn active" data-page="dashboard"><span>⌂</span><span>Dashboard Awal</span></button>
+          <button class="nav-btn" data-page="notepad"><span>✎</span><span>Note Pad</span></button>
+          <button class="nav-btn" data-page="prediksi"><span>✦</span><span>Prediksi</span></button>
+          <button class="nav-btn" data-page="gambar"><span>▧</span><span>Gambar</span></button>
+        </nav>
+        <div class="side-box"><strong>Dashboardndy30</strong><p>Menu bergerak, desain feminin, dan data siap disambungkan ke Firebase.</p></div>
+      </aside>
+
+      <section class="content">
+        <section id="page-dashboard" class="page active">
+          <div class="ticker"><div class="ticker-track">✦ SELAMAT DATANG DI DASHBOARDNDY30 &nbsp;&nbsp;&nbsp; ✦ CATAT IDE, KELOLA DATA, SIMPAN KOLEKSI GAMBAR &nbsp;&nbsp;&nbsp; ✦ PRIVATE WORKSPACE &nbsp;&nbsp;&nbsp; ✦ SELAMAT DATANG DI DASHBOARDNDY30 &nbsp;&nbsp;&nbsp; ✦ CATAT IDE, KELOLA DATA, SIMPAN KOLEKSI GAMBAR &nbsp;&nbsp;&nbsp;</div></div>
+          <div class="hero">
+            <div>
+              <div class="eyebrow">● Online Workspace</div>
+              <h1>Halo, <em>Nadya.</em><br>Semua rapi di satu tempat.</h1>
+              <p>Gunakan dashboard ini sebagai halaman utama untuk mengatur catatan, data prediksi, dan gambar pilihanmu. Karakter di samping dapat diganti memakai foto pemilik dashboard.</p>
+              <div class="hero-actions"><button class="btn btn-pink" data-go="notepad">Buka Note Pad</button><button class="btn btn-soft" data-go="gambar">Kelola Gambar</button></div>
+            </div>
+            <div class="character-stage">
+              <div class="orb"></div>
+              <span class="character-spark a">✦</span><span class="character-spark b">♥</span>
+              <div class="character-card">
+                <!-- GANTI LINK FOTO KARAKTER DI BAWAH INI -->
+                <img id="characterImage" src="https://placehold.co/700x950/ea76ab/ffffff?text=FOTO+KARAKTER+NDY30" alt="Karakter pemilik dashboard">
+              </div>
+              <div class="character-label">Owner Dashboard ✦</div>
+            </div>
+          </div>
+          <div class="grid-stats">
+            <div class="stat"><b id="statNotes">0</b><span>Catatan tersimpan</span></div>
+            <div class="stat"><b id="statPrediksi">0</b><span>Data prediksi</span></div>
+            <div class="stat"><b id="statImages">0</b><span>Koleksi gambar</span></div>
+          </div>
+          <div class="section-head"><div><h2>Menu Cepat</h2><p>Akses utama untuk mulai mengelola isi dashboard.</p></div></div>
+          <div class="cards">
+            <article class="feature"><div class="feature-icon">✎</div><h3>Note Pad</h3><p>Papan catatan warna-warni untuk ide, informasi, dan pengingat pribadi.</p></article>
+            <article class="feature"><div class="feature-icon">✦</div><h3>Prediksi</h3><p>Konsep daftar data di kiri dan tampilan hasil besar di sebelah kanan.</p></article>
+            <article class="feature"><div class="feature-icon">▧</div><h3>Gambar</h3><p>Koleksi gambar berbasis link dengan penambahan dan penghapusan yang sederhana.</p></article>
+          </div>
+        </section>
+
+        <section id="page-notepad" class="page">
+          <div class="board-top"><div><h1>Note Pad</h1><p>Simpan catatan pribadi dalam kartu warna-warni.</p></div><div class="toolbar"><input id="noteSearch" class="search" placeholder="Cari catatan..."><button id="newNoteBtn" class="btn btn-pink">＋ Catatan Baru</button></div></div>
+          <div id="noteGrid" class="note-grid"></div>
+        </section>
+
+        <section id="page-prediksi" class="page">
+          <div class="board-top"><div><h1>Prediksi</h1><p>Konsep daftar data dan hasil cepat, disesuaikan untuk Dashboardndy30.</p></div><div class="toolbar"><button id="newPredictionBtn" class="btn btn-pink">＋ Tambah Data</button></div></div>
+          <div class="predict-layout">
+            <aside class="panel"><div class="panel-title">Daftar Data</div><div id="predictionList" class="prediction-list"></div></aside>
+            <section class="panel"><div id="predictionResult" class="result-box"><span>Pilih salah satu data</span><h2>Belum ada pilihan</h2><p>Tambahkan data baru, kemudian klik daftar data di sebelah kiri.</p></div></section>
+          </div>
+        </section>
+
+        <section id="page-gambar" class="page">
+          <div class="board-top"><div><h1>Gambar</h1><p>Simpan koleksi gambar dari link. Foto karakter dashboard juga dapat diganti dari sini.</p></div></div>
+          <div class="panel">
+            <div class="image-form"><input id="imageTitle" placeholder="Nama gambar"><input id="imageUrl" placeholder="Link gambar (https://...)"><button id="addImageBtn" class="btn btn-pink">Tambah Gambar</button></div>
+            <div class="image-form"><input id="characterUrl" placeholder="Link foto karakter pemilik dashboard"><button id="saveCharacterBtn" class="btn btn-soft">Simpan Foto Karakter</button></div>
+          </div>
+          <div id="gallery" class="gallery" style="margin-top:18px"></div>
+        </section>
+      </section>
+    </div>
+  </main>
+
+  <div id="noteModal" class="modal">
+    <form id="noteForm" class="modal-box">
+      <h3 id="noteModalTitle">Catatan Baru</h3>
+      <input id="noteId" type="hidden">
+      <div class="field"><label>Judul</label><input id="noteTitle" required placeholder="Judul catatan"></div>
+      <div class="field"><label>Isi catatan</label><textarea id="noteContent" required rows="7" placeholder="Tulis isi catatan..."></textarea></div>
+      <div class="field"><label>Warna kartu</label><select id="noteColor"><option value="pink">Pink</option><option value="peach">Peach</option><option value="lilac">Lilac</option><option value="mint">Mint</option></select></div>
+      <div class="modal-actions"><button type="button" class="btn btn-soft" data-close="noteModal">Batal</button><button class="btn btn-pink" type="submit">Simpan Catatan</button></div>
+    </form>
+  </div>
+
+  <div id="predictionModal" class="modal">
+    <form id="predictionForm" class="modal-box">
+      <h3>Tambah Data Prediksi</h3>
+      <div class="field"><label>Nama data</label><input id="predictionTitle" required placeholder="Contoh: Data Utama"></div>
+      <div class="field"><label>Isi / hasil</label><textarea id="predictionContent" required rows="7" placeholder="Tulis informasi atau hasil di sini..."></textarea></div>
+      <div class="modal-actions"><button type="button" class="btn btn-soft" data-close="predictionModal">Batal</button><button class="btn btn-pink" type="submit">Simpan Data</button></div>
+    </form>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+    import { getDatabase, ref, push, set, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+
+    /* ==========================================================
+       FIREBASE CONFIG — AUTH + REALTIME DATABASE
+       1. Buka Firebase Console > Project settings > Your apps > Web app.
+       2. Salin firebaseConfig ke bawah ini.
+       3. Setelah diisi, ubah FIREBASE_READY menjadi true.
+       ========================================================== */
+    const firebaseConfig = {
+      apiKey: "AIzaSyDaoEo6xrCHQdgVHb0_h4FPp3oUs_Rw0-0",
+      authDomain: "dashboardndy30.firebaseapp.com",
+      projectId: "dashboardndy30",
+      storageBucket: "dashboardndy30.firebasestorage.app",
+      messagingSenderId: "1086364739819",
+      appId: "1:1086364739819:web:59225a66fd2f1a0de9b6ae"
+    };
+    const FIREBASE_READY = true;
+
+    /* Username akan otomatis menjadi email Firebase seperti:
+       nadyatasya30 => nadyatasya30@dashboardndy30.local
+       Buat email tersebut di Firebase Authentication > Users. */
+    const USERNAME_DOMAIN = "dashboardndy30.local";
+
+    const $ = (s) => document.querySelector(s);
+    const $$ = (s) => [...document.querySelectorAll(s)];
+    let auth = null, db = null, currentUser = null, previewMode = false;
+    let notes = [], predictions = [], images = [];
+    let selectedPredictionId = null;
+
+    function toast(msg){
+      const el = $("#toast"); el.textContent = msg; el.classList.add("show");
+      clearTimeout(window.__toast); window.__toast = setTimeout(()=>el.classList.remove("show"), 2400);
+    }
+    function safe(v){ return String(v ?? "").replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m])); }
+    function id(){ return crypto.randomUUID ? crypto.randomUUID() : String(Date.now())+Math.random(); }
+    function usernameToEmail(name){ return `${name.trim().toLowerCase().replace(/\s+/g,"")}@${USERNAME_DOMAIN}`; }
+    function setAppVisible(show){
+      $("#authScreen").classList.toggle("hidden",show);
+      $("#app").classList.toggle("hidden",!show);
+    }
+    function localGet(key){ try{return JSON.parse(localStorage.getItem(key)||"[]")}catch{return []} }
+    function localSet(key,data){ localStorage.setItem(key,JSON.stringify(data)); }
+    function localSettings(){ return JSON.parse(localStorage.getItem("ndy30Settings") || "{}"); }
+    function saveLocalSettings(v){ localStorage.setItem("ndy30Settings", JSON.stringify(v)); }
+
+    function switchPage(page){
+      $$(".page").forEach(p=>p.classList.toggle("active",p.id===`page-${page}`));
+      $$(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+      $("#sidebar").classList.remove("open");
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    function updateStats(){
+      $("#statNotes").textContent=notes.length;
+      $("#statPrediksi").textContent=predictions.length;
+      $("#statImages").textContent=images.length;
+    }
+
+    function renderNotes(){
+      const q=($("#noteSearch").value||"").toLowerCase();
+      const filtered=notes.filter(n=>`${n.title} ${n.content}`.toLowerCase().includes(q));
+      $("#noteGrid").innerHTML = filtered.length ? filtered.map(n=>`
+        <article class="note ${safe(n.color||"pink")}">
+          <h3>${safe(n.title)}</h3>
+          <p>${safe(n.content)}</p>
+          <small>${n.updatedAtText || "Baru saja"}</small>
+          <div class="note-actions">
+            <button class="mini" data-edit-note="${n.id}">Edit</button>
+            <button class="mini" data-delete-note="${n.id}">Hapus</button>
+          </div>
+        </article>`).join("") : `<div class="empty">Belum ada catatan. Tekan <b>Catatan Baru</b> untuk mulai.</div>`;
+      updateStats();
+    }
+
+    function renderPredictions(){
+      $("#predictionList").innerHTML = predictions.length ? predictions.map(p=>`
+        <button class="prediction-item ${selectedPredictionId===p.id?"active":""}" data-select-prediction="${p.id}">
+          ${safe(p.title)}
+        </button>`).join("") : `<div class="empty">Belum ada data.</div>`;
+      const selected=predictions.find(p=>p.id===selectedPredictionId) || predictions[0];
+      if(selected){
+        selectedPredictionId=selected.id;
+        $("#predictionResult").innerHTML=`<span>Data Terpilih</span><h2>${safe(selected.title)}</h2><p>${safe(selected.content)}</p><div class="result-actions"><button class="btn btn-dark" id="copyPrediction">Salin Isi</button><button class="btn btn-soft" id="deleteSelectedPrediction">Hapus Data</button></div>`;
+      } else {
+        $("#predictionResult").innerHTML=`<span>Pilih salah satu data</span><h2>Belum ada pilihan</h2><p>Tambahkan data baru, kemudian klik daftar data di sebelah kiri.</p>`;
+      }
+      updateStats();
+    }
+
+    function imageCard(g){
+      const url=safe(g.url);
+      return `<article class="gallery-card">
+        <img src="${url}" alt="${safe(g.title)}" onerror="this.outerHTML='<div class=&quot;placeholder-img&quot; style=&quot;height:195px&quot;>Gambar tidak dapat dimuat</div>'">
+        <div class="gallery-body"><b>${safe(g.title)}</b><div class="gallery-meta"><small>koleksi gambar</small><button class="mini" data-delete-image="${g.id}">Hapus</button></div></div>
+      </article>`;
+    }
+    function renderImages(){ $("#gallery").innerHTML=images.length?images.map(imageCard).join(""):`<div class="empty">Belum ada gambar tersimpan.</div>`; updateStats(); }
+
+    function renderAll(){renderNotes();renderPredictions();renderImages();}
+    function openModal(id){$("#"+id).classList.add("show")}
+    function closeModal(id){$("#"+id).classList.remove("show")}
+
+    async function saveNote(data){
+      if(previewMode){
+        const item = {...data, id:data.id || id(), updatedAt:Date.now(), updatedAtText:new Date().toLocaleString("id-ID")};
+        if(data.id) notes = notes.map(n => n.id === data.id ? item : n);
+        else notes.unshift(item);
+        localSet("ndy30Notes", notes); renderNotes(); return;
+      }
+      if(data.id){
+        await update(ref(db, `dashboardndy30/notes/${data.id}`), {
+          title:data.title, content:data.content, color:data.color, updatedAt:Date.now()
+        });
+      } else {
+        const newRef = push(ref(db, "dashboardndy30/notes"));
+        await set(newRef, {
+          title:data.title, content:data.content, color:data.color, updatedAt:Date.now()
+        });
+      }
+    }
+    async function removeNote(noteId){
+      if(!confirm("Hapus catatan ini?")) return;
+      if(previewMode){
+        notes = notes.filter(x => x.id !== noteId);
+        localSet("ndy30Notes", notes); renderNotes(); return;
+      }
+      await remove(ref(db, `dashboardndy30/notes/${noteId}`));
+    }
+    async function savePrediction(data){
+      if(previewMode){
+        const item = {...data, id:id(), createdAt:Date.now()};
+        predictions.unshift(item);
+        localSet("ndy30Predictions", predictions);
+        selectedPredictionId = item.id;
+        renderPredictions(); return;
+      }
+      const newRef = push(ref(db, "dashboardndy30/predictions"));
+      await set(newRef, {...data, createdAt:Date.now()});
+    }
+    async function removePrediction(predId){
+      if(!confirm("Hapus data ini?")) return;
+      if(previewMode){
+        predictions = predictions.filter(x => x.id !== predId);
+        localSet("ndy30Predictions", predictions);
+        selectedPredictionId = null; renderPredictions(); return;
+      }
+      await remove(ref(db, `dashboardndy30/predictions/${predId}`));
+    }
+    async function saveImage(data){
+      if(previewMode){
+        images.unshift({...data, id:id(), createdAt:Date.now()});
+        localSet("ndy30Images", images); renderImages(); return;
+      }
+      const newRef = push(ref(db, "dashboardndy30/images"));
+      await set(newRef, {...data, createdAt:Date.now()});
+    }
+    async function removeImage(imageId){
+      if(!confirm("Hapus gambar ini?")) return;
+      if(previewMode){
+        images = images.filter(x => x.id !== imageId);
+        localSet("ndy30Images", images); renderImages(); return;
+      }
+      await remove(ref(db, `dashboardndy30/images/${imageId}`));
+    }
+    async function saveCharacter(url){
+      if(previewMode){
+        const s = localSettings(); s.characterUrl = url; saveLocalSettings(s);
+        $("#characterImage").src = url; toast("Foto karakter disimpan."); return;
+      }
+      await update(ref(db, "dashboardndy30/settings"), {characterUrl:url});
+    }
+
+    function loadPreviewData(){
+      notes=localGet("ndy30Notes");
+      predictions=localGet("ndy30Predictions");
+      images=localGet("ndy30Images");
+      const s=localSettings(); if(s.characterUrl) $("#characterImage").src=s.characterUrl;
+      renderAll();
+    }
+
+    function startFirebase(){
+      const app = initializeApp(firebaseConfig);
+      auth = getAuth(app);
+      db = getDatabase(app);
+
+      onValue(ref(db, "dashboardndy30/notes"), snap => {
+        const val = snap.val() || {};
+        notes = Object.entries(val).map(([key, item]) => ({
+          ...item,
+          id:key,
+          updatedAtText:item.updatedAt ? new Date(item.updatedAt).toLocaleString("id-ID") : "Baru saja"
+        })).sort((a,b) => (b.updatedAt||0) - (a.updatedAt||0));
+        renderNotes();
+      });
+
+      onValue(ref(db, "dashboardndy30/predictions"), snap => {
+        const val = snap.val() || {};
+        predictions = Object.entries(val).map(([key,item]) => ({...item,id:key}))
+          .sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+        renderPredictions();
+      });
+
+      onValue(ref(db, "dashboardndy30/images"), snap => {
+        const val = snap.val() || {};
+        images = Object.entries(val).map(([key,item]) => ({...item,id:key}))
+          .sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+        renderImages();
+      });
+
+      onValue(ref(db, "dashboardndy30/settings"), snap => {
+        const data = snap.val();
+        if(data && data.characterUrl) $("#characterImage").src = data.characterUrl;
+      });
+
+      onAuthStateChanged(auth, user => {
+        if(user){
+          currentUser = user;
+          previewMode = false;
+          $("#userNameLabel").textContent = user.email.split("@")[0];
+          setAppVisible(true);
+        } else if(!previewMode){
+          setAppVisible(false);
+        }
+      });
+    }
+
+    $("#loginForm").addEventListener("submit",async(e)=>{
+      e.preventDefault();$("#loginError").textContent="";
+      if(!FIREBASE_READY){$("#loginError").textContent="Firebase belum diisi. Gunakan tombol Preview atau isi config Firebase dahulu.";return;}
+      try{
+        await signInWithEmailAndPassword(auth,usernameToEmail($("#loginUsername").value),$("#loginPassword").value);
+      }catch(err){$("#loginError").textContent="Login gagal. Periksa username dan password di Firebase.";}
+    });
+    $("#previewBtn").addEventListener("click",()=>{previewMode=true;$("#userNameLabel").textContent="Preview Mode";setAppVisible(true);loadPreviewData();toast("Mode preview aktif. Data disimpan di browser ini.");});
+    $("#logoutBtn").addEventListener("click",async()=>{if(previewMode){previewMode=false;setAppVisible(false);return;}await signOut(auth);});
+    $("#hamburger").addEventListener("click",()=>$("#sidebar").classList.toggle("open"));
+    $$(".nav-btn").forEach(b=>b.addEventListener("click",()=>switchPage(b.dataset.page)));
+    $$("[data-go]").forEach(b=>b.addEventListener("click",()=>switchPage(b.dataset.go)));
+    $("#noteSearch").addEventListener("input",renderNotes);
+
+    $("#newNoteBtn").addEventListener("click",()=>{ $("#noteForm").reset();$("#noteId").value="";$("#noteModalTitle").textContent="Catatan Baru";openModal("noteModal");});
+    $("#noteForm").addEventListener("submit",async(e)=>{e.preventDefault();await saveNote({id:$("#noteId").value,title:$("#noteTitle").value.trim(),content:$("#noteContent").value.trim(),color:$("#noteColor").value});closeModal("noteModal");toast("Catatan tersimpan.");});
+    $("#newPredictionBtn").addEventListener("click",()=>{ $("#predictionForm").reset();openModal("predictionModal");});
+    $("#predictionForm").addEventListener("submit",async(e)=>{e.preventDefault();await savePrediction({title:$("#predictionTitle").value.trim(),content:$("#predictionContent").value.trim()});closeModal("predictionModal");toast("Data prediksi tersimpan.");});
+    $("#addImageBtn").addEventListener("click",async()=>{let title=$("#imageTitle").value.trim(),url=$("#imageUrl").value.trim();if(!title||!url){toast("Isi nama dan link gambar dahulu.");return;}await saveImage({title,url});$("#imageTitle").value="";$("#imageUrl").value="";toast("Gambar ditambahkan.");});
+    $("#saveCharacterBtn").addEventListener("click",async()=>{const url=$("#characterUrl").value.trim();if(!url){toast("Masukkan link foto karakter.");return;}await saveCharacter(url);$("#characterUrl").value="";});
+    $$("[data-close]").forEach(b=>b.addEventListener("click",()=>closeModal(b.dataset.close)));
+
+    document.addEventListener("click",async(e)=>{
+      const edit=e.target.closest("[data-edit-note]"); if(edit){const n=notes.find(x=>x.id===edit.dataset.editNote);if(!n)return;$("#noteId").value=n.id;$("#noteTitle").value=n.title;$("#noteContent").value=n.content;$("#noteColor").value=n.color||"pink";$("#noteModalTitle").textContent="Edit Catatan";openModal("noteModal");}
+      const del=e.target.closest("[data-delete-note]");if(del) await removeNote(del.dataset.deleteNote);
+      const sel=e.target.closest("[data-select-prediction]");if(sel){selectedPredictionId=sel.dataset.selectPrediction;renderPredictions();}
+      const dp=e.target.closest("#deleteSelectedPrediction");if(dp&&selectedPredictionId)await removePrediction(selectedPredictionId);
+      const cp=e.target.closest("#copyPrediction");if(cp){const p=predictions.find(x=>x.id===selectedPredictionId);if(p){await navigator.clipboard.writeText(`${p.title}\n\n${p.content}`);toast("Isi data sudah disalin.");}}
+      const di=e.target.closest("[data-delete-image]");if(di)await removeImage(di.dataset.deleteImage);
+    });
+
+    if(FIREBASE_READY) startFirebase();
+  </script>
+</body>
+</html>
