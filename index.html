@@ -335,7 +335,7 @@
     .market-stat.total{background:linear-gradient(135deg,#8d4383,#d45e9d)}
     .market-stat.open{background:linear-gradient(135deg,#3dbd91,#39a8bf)}
     .market-stat.closed{background:linear-gradient(135deg,#d85d77,#9d345d)}
-    .market-workspace{display:grid;grid-template-columns:300px minmax(0,1fr);gap:14px;min-height:520px}
+    .market-workspace{display:grid;grid-template-columns:300px minmax(0,1fr);gap:14px;min-height:520px;align-items:start}
     .market-list-panel,.market-result-panel{background:rgba(255,255,255,.84);border:1px solid #f1ccdc;border-radius:21px;overflow:hidden}
     .market-list-title{padding:15px 16px;background:#fff6fb;color:#8d3260;font-size:12px;font-weight:950;text-transform:uppercase;letter-spacing:.75px;border-bottom:1px solid #f4d5e3}
     .market-list{padding:10px;display:flex;flex-direction:column;gap:8px;max-height:570px;overflow:auto}
@@ -387,6 +387,41 @@
     .character-panel{margin-top:16px;padding:15px;border-radius:18px;background:#fff;border:1px solid #f3d1e0;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     .character-panel input{flex:1;min-width:220px;border:1px solid #f1c8da;border-radius:13px;padding:12px}
     @media(max-width:640px){.gallery-hero{padding:19px}.gallery-hero h1{font-size:24px}.gallery-toolbar{align-items:stretch}.gallery-search{min-width:100%}.gallery-toolbar .btn{flex:1}.image-preview{height:160px}}
+
+
+    /* BATAS TINGGI ISI PREDIKSI — SCROLL DI DALAM KOTAK */
+    .market-result-panel{
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+    }
+    .market-content{
+      min-height:0!important;
+      height:520px;
+      max-height:calc(100vh - 310px);
+      overflow-y:auto;
+      align-content:start;
+      scrollbar-width:thin;
+      scrollbar-color:#df73a5 #fff2f8;
+    }
+    .market-content::-webkit-scrollbar{width:9px}
+    .market-content::-webkit-scrollbar-track{background:#fff2f8;border-radius:99px}
+    .market-content::-webkit-scrollbar-thumb{background:#df73a5;border-radius:99px;border:2px solid #fff2f8}
+    .market-content-inner{
+      width:100%;
+      text-align:left!important;
+      white-space:pre-wrap;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+      padding:2px 8px 18px 2px;
+    }
+    .market-content-inner h2{text-align:center}
+    @media(max-width:900px){
+      .market-content{height:430px;max-height:none}
+    }
+    @media(max-width:640px){
+      .market-content{height:360px}
+    }
 
 </style>
 </head>
