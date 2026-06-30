@@ -853,6 +853,9 @@
       }
     }
 
+
+/* PENGELUARAN NADYA */
+#page-pengeluaran{min-height:calc(100vh - 130px)}.expense-shell{background:linear-gradient(135deg,#fff7fb,#fff 48%,#ffe1ee);border:1px solid #f3c9dc;border-radius:28px;padding:22px;box-shadow:var(--shadow)}.expense-head{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}.expense-head span{display:inline-block;padding:7px 10px;border-radius:999px;background:#ffe3ef;color:#b12c66;font-size:10px;font-weight:950;letter-spacing:.7px}.expense-head h1{margin:10px 0 4px;color:#4b1c37;font-size:29px}.expense-head p{margin:0;color:#966b81;font-size:13px}.expense-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.expense-controls input{height:43px;border:1px solid #efc5d9;border-radius:12px;padding:0 10px;color:#5d2744;background:#fff}.expense-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}.expense-summary>div{padding:16px;border-radius:18px;color:#fff;background:linear-gradient(135deg,#8e3e70,#dc69a2);box-shadow:0 10px 22px rgba(122,32,75,.14)}.expense-summary>div:nth-child(2){background:linear-gradient(135deg,#df739f,#f09cc2)}.expense-summary>div:nth-child(3){background:linear-gradient(135deg,#cc5a74,#a9365c)}.expense-summary>div:nth-child(4){background:linear-gradient(135deg,#3ab78d,#33a2b1)}.expense-summary small{display:block;font-weight:900;font-size:11px}.expense-summary b{display:block;font-size:25px;margin-top:6px}.expense-table-card{background:#fff;border:1px solid #f0cbdc;border-radius:21px;overflow:hidden}.expense-table-top{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap;padding:17px;background:#fff9fc;border-bottom:1px solid #f3d6e3}.expense-table-top h2{margin:0;color:#6d2b4d;font-size:17px}.expense-table-top p{margin:5px 0 0;color:#a06b82;font-size:11px}.expense-scroll{overflow:auto;max-height:610px}.expense-table{width:100%;border-collapse:collapse;min-width:920px}.expense-table th{position:sticky;top:0;background:#fff2f8;color:#8d3260;font-size:11px;text-transform:uppercase;letter-spacing:.4px}.expense-table th,.expense-table td{padding:12px 13px;border-bottom:1px solid #f7dce8;text-align:left}.expense-table td{font-size:13px;font-weight:780;color:#54223f}.expense-input{width:132px;border:1px solid #f0c3d7;border-radius:10px;padding:9px 10px;font-weight:800;outline:none}.expense-input:focus{border-color:#e95f9e;box-shadow:0 0 0 3px rgba(233,77,145,.11)}.expense-status{padding:6px 9px;border-radius:999px;font-size:10px;font-weight:950}.expense-status.safe{background:#dff8ea;color:#168156}.expense-status.warning{background:#fff0cb;color:#9b6811}.expense-status.over{background:#ffe1e6;color:#bd315a}@media(max-width:900px){.expense-summary{grid-template-columns:repeat(2,1fr)}}@media(max-width:640px){.expense-shell{padding:14px}.expense-summary{grid-template-columns:1fr}.expense-controls{width:100%}.expense-controls input,.expense-controls button{flex:1}}
 </style>
 
   <script>
@@ -931,6 +934,7 @@
           <button class="nav-btn" data-page="notepad"><span>🌸</span><span>Note Pad</span></button>
           <button class="nav-btn" data-page="prediksi"><span>🌏</span><span>Prediksi</span></button>
           <button class="nav-btn" data-page="gambar"><span>🏞️</span><span>Gambar</span></button>
+          <button class="nav-btn" data-page="pengeluaran"><span>💵</span><span>Pengeluaran Nadya</span></button>
         </div>
       </nav>
 
@@ -1009,6 +1013,13 @@
           </div>
           <div id="gallery" class="gallery"></div>
 </section>
+        <section id="page-pengeluaran" class="page">
+          <div class="expense-shell">
+            <div class="expense-head"><div><span>💵 CATATAN KEUANGAN</span><h1>Pengeluaran Nadya</h1><p>Mata uang: Dollar Amerika (USD).</p></div><div class="expense-controls"><input id="expenseMonth" type="month"><button class="btn btn-pink" id="saveExpenseBtn" type="button">Simpan Semua</button></div></div>
+            <div class="expense-summary"><div><small>Saldo Utama</small><b id="expMain">$0.00</b></div><div><small>Total Jatah Harian</small><b id="expAllowance">$0.00</b></div><div><small>Total Pengeluaran</small><b id="expSpent">$0.00</b></div><div><small>Sisa Saldo</small><b id="expRemain">$0.00</b></div></div>
+            <div class="expense-table-card"><div class="expense-table-top"><div><h2>Tabel Pengeluaran Harian</h2><p>Saldo utama diisi pada tanggal 1. Perhitungan saldo berikutnya otomatis.</p></div><button class="btn btn-soft" id="resetExpenseBtn" type="button">Reset Bulan</button></div><div class="expense-scroll"><table class="expense-table"><thead><tr><th>Tanggal</th><th>Jatah Harian</th><th>Pengeluaran</th><th>Sisa Saldo</th><th>Status</th><th>Saldo Utama</th></tr></thead><tbody id="expenseRows"></tbody></table></div></div>
+          </div>
+        </section>
       </section>
     </div>
   </main>
@@ -1161,6 +1172,7 @@
       track.style.animation = "";
     }
     window.addEventListener("pageshow", resetTicker);
+    window.addEventListener("DOMContentLoaded", expInit);
     let auth = null, db = null, currentUser = null, previewMode = false;
     let notes = [], predictions = [], images = [];
     let selectedPredictionId = null;
@@ -1186,7 +1198,7 @@
     function saveLocalSettings(v){ localStorage.setItem("ndy30Settings", JSON.stringify(v)); }
 
     const LAST_PAGE_KEY="ndy30LastActivePage";
-    const VALID_PAGES=["dashboard","notepad","prediksi","gambar"];
+    const VALID_PAGES=["dashboard","notepad","prediksi","gambar","pengeluaran"];
 
     function getLastPage(){
       const saved=localStorage.getItem(LAST_PAGE_KEY);
@@ -1205,6 +1217,19 @@
       $("#sidebar").classList.remove("open");
       if(scroll) window.scrollTo({top:0,behavior:"smooth"});
     }
+
+
+    // PENGELUARAN NADYA
+    const EXP_KEY="ndy30Expense";
+    const usd=new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"});
+    let exp={month:"",rows:[]};
+    function expRows(){return Array.from({length:31},(_,i)=>({day:i+1,allowance:"",spending:"",main:i===0?"":""}));}
+    function num(v){const n=parseFloat(String(v??"").replace(/[^0-9.-]/g,""));return Number.isFinite(n)?n:0;}
+    function expLoad(month){try{const x=JSON.parse(localStorage.getItem(`${EXP_KEY}_${month}`)||"null");exp=x&&x.rows?{month,rows:expRows().map((r,i)=>({...r,...(x.rows[i]||{})}))}:{month,rows:expRows()};}catch{exp={month,rows:expRows()};}}
+    function expSave(){try{localStorage.setItem(`${EXP_KEY}_${exp.month}`,JSON.stringify(exp));}catch(e){console.warn(e);}}
+    function expCalc(){let balance=0,has=false;return exp.rows.map((r,i)=>{let a=num(r.allowance),s=num(r.spending);if(i===0&&String(r.main).trim()!==""){balance=num(r.main);has=true;}let opening=has?balance:0;let remaining=opening+a-s;if(has)balance=remaining;let status=remaining<0?"over":(a>0&&s>a?"warning":"safe");return {...r,a,s,opening,remaining,status};});}
+    function expRender(){const body=$("#expenseRows");if(!body)return;const rows=expCalc();body.innerHTML=rows.map((r,i)=>{let tx=r.status==="over"?"Melebihi Saldo":r.status==="warning"?"Melebihi Jatah":"Aman";return `<tr><td><b>${String(r.day).padStart(2,"0")}</b></td><td><input class="expense-input" data-exp-field="allowance" data-exp-index="${i}" placeholder="0.00" value="${safe(r.allowance||"")}"></td><td><input class="expense-input" data-exp-field="spending" data-exp-index="${i}" placeholder="0.00" value="${safe(r.spending||"")}"></td><td>${usd.format(r.remaining)}</td><td><span class="expense-status ${r.status}">${tx}</span></td><td>${i===0?`<input class="expense-input" data-exp-field="main" data-exp-index="0" placeholder="0.00" value="${safe(r.main||"")}">`:usd.format(r.opening)}</td></tr>`;}).join("");$("#expMain").textContent=usd.format(num(exp.rows[0]?.main));$("#expAllowance").textContent=usd.format(rows.reduce((x,r)=>x+r.a,0));$("#expSpent").textContent=usd.format(rows.reduce((x,r)=>x+r.s,0));$("#expRemain").textContent=usd.format(rows.at(-1)?.remaining||0);}
+    function expInit(){const m=$("#expenseMonth");if(!m)return;if(!m.value){const d=new Date();m.value=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;}expLoad(m.value);expRender();}
 
     function updateStats(){
       $("#statNotes").textContent=notes.length;
@@ -1484,6 +1509,12 @@
       }
     });
     $("#logoutBtn").addEventListener("click",async()=>{if(previewMode){previewMode=false;setAppVisible(false);closeLoginCard();return;}await signOut(auth);closeLoginCard();});
+
+    $("#expenseMonth")?.addEventListener("change",e=>{expLoad(e.target.value);expRender();});
+    $("#expenseRows")?.addEventListener("input",e=>{const x=e.target.closest("[data-exp-field]");if(!x)return;exp.rows[Number(x.dataset.expIndex)][x.dataset.expField]=x.value;expRender();});
+    $("#saveExpenseBtn")?.addEventListener("click",()=>{expSave();toast("Pengeluaran Nadya berhasil disimpan.");});
+    $("#resetExpenseBtn")?.addEventListener("click",()=>{if(!confirm("Reset pengeluaran bulan ini?"))return;exp={month:$("#expenseMonth").value,rows:expRows()};expSave();expRender();toast("Tabel pengeluaran direset.");});
+
     $("#hamburger").addEventListener("click",()=>$("#sidebar").classList.toggle("open"));
     $$(".nav-btn").forEach(b=>b.addEventListener("click",()=>switchPage(b.dataset.page)));
     $$("[data-go]").forEach(b=>b.addEventListener("click",()=>switchPage(b.dataset.go)));
