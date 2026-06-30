@@ -907,6 +907,43 @@
       justify-content:center!important;
     }
 
+
+    /* PREVIEW GAMBAR LAYAR DEPAN */
+    .gallery-image-open{
+      position:relative;display:block;width:100%;padding:0;border:0;background:transparent;cursor:zoom-in;overflow:hidden;
+    }
+    .gallery-image-open img{display:block;width:100%;transition:transform .22s ease,filter .22s ease}
+    .gallery-image-open:hover img{transform:scale(1.035);filter:brightness(.78)}
+    .gallery-zoom-hint{
+      position:absolute;left:50%;top:50%;transform:translate(-50%,-38%);
+      padding:9px 12px;border-radius:999px;background:rgba(77,25,56,.84);color:#fff;
+      font-size:11px;font-weight:950;letter-spacing:.35px;opacity:0;transition:.2s ease;white-space:nowrap;
+    }
+    .gallery-image-open:hover .gallery-zoom-hint{opacity:1;transform:translate(-50%,-50%)}
+    .gallery-viewer-modal{
+      position:fixed;inset:0;z-index:999999;display:none;align-items:center;justify-content:center;
+      padding:28px;background:rgba(48,15,36,.72);backdrop-filter:blur(8px);
+    }
+    .gallery-viewer-modal.show{display:flex;animation:galleryViewerFade .18s ease}
+    .gallery-viewer-box{
+      position:relative;display:flex;flex-direction:column;align-items:center;max-width:min(1100px,94vw);max-height:92vh;
+      padding:12px;border-radius:22px;background:#fff;box-shadow:0 30px 90px rgba(24,4,17,.45);
+      animation:galleryViewerPop .22s cubic-bezier(.2,.8,.2,1);
+    }
+    .gallery-viewer-box img{display:block;max-width:100%;max-height:78vh;object-fit:contain;border-radius:14px;background:#fdf4f8}
+    .gallery-viewer-title{padding:10px 8px 2px;color:#632747;font-size:13px;font-weight:950;text-align:center}
+    .gallery-viewer-close{
+      position:absolute;right:-12px;top:-12px;width:38px;height:38px;border:0;border-radius:50%;
+      background:#db3d83;color:#fff;font-size:16px;font-weight:950;cursor:pointer;box-shadow:0 9px 22px rgba(133,26,78,.35)
+    }
+    @keyframes galleryViewerFade{from{opacity:0}to{opacity:1}}
+    @keyframes galleryViewerPop{from{opacity:0;transform:scale(.94) translateY(12px)}to{opacity:1;transform:none}}
+    @media(max-width:640px){
+      .gallery-viewer-modal{padding:18px}
+      .gallery-viewer-box{padding:8px;border-radius:17px}
+      .gallery-viewer-box img{max-height:78vh}
+    }
+
 </style>
 
   <script>
@@ -1197,6 +1234,14 @@
     </form>
   </div>
 
+  <div id="galleryViewerModal" class="gallery-viewer-modal" role="dialog" aria-modal="true" aria-label="Preview Gambar">
+    <div class="gallery-viewer-box">
+      <button id="closeGalleryViewer" type="button" class="gallery-viewer-close" aria-label="Tutup preview">✕</button>
+      <img id="galleryViewerImage" src="" alt="Preview gambar">
+      <div id="galleryViewerTitle" class="gallery-viewer-title"></div>
+    </div>
+  </div>
+
   <div id="toast" class="toast"></div>
 
   <script type="module">
@@ -1446,7 +1491,10 @@
     function imageCard(g){
       const url=safe(g.url);
       return `<article class="gallery-card" data-gallery-card="${safe(g.id)}">
-        <img src="${url}" alt="${safe(g.title)}" onerror="this.outerHTML='<div class=&quot;placeholder-img&quot; style=&quot;height:210px&quot;>Gambar tidak dapat dimuat</div>'">
+        <button class="gallery-image-open" type="button" data-view-image="${safe(g.id)}" aria-label="Lihat ${safe(g.title)}">
+          <img src="${url}" alt="${safe(g.title)}" onerror="this.outerHTML='<div class=&quot;placeholder-img&quot; style=&quot;height:210px&quot;>Gambar tidak dapat dimuat</div>'">
+          <span class="gallery-zoom-hint">⌕ Lihat Gambar</span>
+        </button>
         <div class="gallery-body"><b>${safe(g.title)}</b><div class="gallery-meta"><small>${g.createdAt?new Date(g.createdAt).toLocaleString("id-ID"):"koleksi gambar"}</small><span><button class="mini" data-edit-image="${safe(g.id)}">Edit</button> <button class="mini" data-delete-image="${safe(g.id)}">Hapus</button></span></div></div>
       </article>`;
     }
@@ -1947,6 +1995,26 @@ $("#noteImageFile")?.addEventListener("change",async e=>{
       if(!e.target.closest(".account-menu-wrap")) closeAccountDropdown();
     });
 
+
+    function openGalleryViewer(imageId){
+      const item=images.find(x=>x.id===imageId);
+      if(!item || !item.url) return;
+      $("#galleryViewerImage").src=item.url;
+      $("#galleryViewerImage").alt=item.title||"Preview gambar";
+      $("#galleryViewerTitle").textContent=item.title||"Gambar";
+      $("#galleryViewerModal").classList.add("show");
+    }
+    function closeGalleryViewer(){
+      const modal=$("#galleryViewerModal");
+      if(!modal) return;
+      modal.classList.remove("show");
+      $("#galleryViewerImage").src="";
+    }
+    $("#closeGalleryViewer")?.addEventListener("click",closeGalleryViewer);
+    $("#galleryViewerModal")?.addEventListener("click",e=>{
+      if(e.target.id==="galleryViewerModal") closeGalleryViewer();
+    });
+
     document.addEventListener("click",async(e)=>{
       const edit=e.target.closest("[data-edit-note]"); if(edit){const n=notes.find(x=>x.id===edit.dataset.editNote);if(!n)return;$("#noteId").value=n.id;$("#noteTitle").value=n.title||"";$("#noteContent").value=n.content||"";$("#noteCategory").value=n.category||"PK CS";setNoteColor(n.color||"pink");$("#noteModalTitle").textContent="Edit Catatan";openModal("noteModal");}
       const copyNote=e.target.closest("[data-copy-note]");if(copyNote){const n=notes.find(x=>x.id===copyNote.dataset.copyNote);if(n){await navigator.clipboard.writeText(`${n.title}\n\n${n.content}`);toast("Catatan disalin.");}}
@@ -1955,6 +2023,7 @@ $("#noteImageFile")?.addEventListener("change",async e=>{
       const sel=e.target.closest("[data-select-prediction]");if(sel){selectedPredictionId=sel.dataset.selectPrediction;renderPredictions();}
       const dp=e.target.closest("#deleteSelectedPrediction");if(dp&&selectedPredictionId)await removePrediction(selectedPredictionId);
       const cp=e.target.closest("#copyPrediction");if(cp){const p=predictions.find(x=>x.id===selectedPredictionId);if(p){await navigator.clipboard.writeText(`${p.title}\n\n${p.content}`);toast("Isi data sudah disalin.");}}
+      const vi=e.target.closest("[data-view-image]");if(vi){openGalleryViewer(vi.dataset.viewImage);return;}
       const ei=e.target.closest("[data-edit-image]");if(ei)openImageEditor(ei.dataset.editImage);
       const di=e.target.closest("[data-delete-image]");if(di)await removeImage(di.dataset.deleteImage);
     });
@@ -2140,6 +2209,7 @@ $("#noteImageFile")?.addEventListener("change",async e=>{
       if(e.key==="Escape"){
         document.querySelectorAll(".modal.show, .modal-overlay.show, .domain-modal.show, .pkcs-modal.show").forEach(x=>x.classList.remove("show"));
         closeAccountDropdown();
+        closeGalleryViewer();
       }
     });
 
