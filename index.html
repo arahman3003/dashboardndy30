@@ -862,6 +862,17 @@
     .usd-after{margin-left:3px;font-size:.9em}
     .expense-spending-wrap{display:inline-flex;align-items:center;gap:4px;font-weight:900}
 
+
+    /* SALDO UTAMA & STATUS PENGELUARAN */
+    .expense-mini-btn{margin-top:9px;margin-right:6px;padding:7px 10px;border:0;border-radius:10px;background:#fff;color:#a83368;font-size:10px;font-weight:950;cursor:pointer;box-shadow:0 7px 14px rgba(72,16,50,.11)}
+    .expense-mini-btn.ghost{background:rgba(255,255,255,.42);border:1px solid rgba(255,255,255,.55)}
+    .balance-modal-box{max-width:470px}
+    .balance-modal-text{margin:-6px 0 16px;color:#95687e;font-size:13px;line-height:1.5}
+    .balance-input-wrap{display:flex;align-items:center;gap:8px;border:1px solid #efc4d8;border-radius:12px;padding-right:12px;background:#fff}
+    .balance-input-wrap:focus-within{border-color:#ea67a3;box-shadow:0 0 0 3px rgba(233,77,145,.11)}
+    .balance-input-wrap input{border:0!important;box-shadow:none!important;flex:1}
+    .balance-input-wrap span{font-weight:950;color:#8e315f}
+
 </style>
 
   <script>
@@ -1022,13 +1033,27 @@
         <section id="page-pengeluaran" class="page">
           <div class="expense-shell">
             <div class="expense-head"><div><span>💵 CATATAN KEUANGAN</span><h1>Pengeluaran Nadya</h1><p>Jatah harian dan saldo utama dibuat otomatis dalam Dollar Amerika.</p></div><div class="expense-controls"><input id="expenseMonth" type="month"><button class="btn btn-pink" id="saveExpenseBtn" type="button">Simpan Semua</button></div></div>
-            <div class="expense-summary"><div><small>Saldo Utama</small><b id="expMain">$0.00</b></div><div><small>Total Jatah Harian</small><b id="expAllowance">$0.00</b></div><div><small>Total Pengeluaran</small><b id="expSpent">$0.00</b></div><div><small>Sisa Saldo</small><b id="expRemain">$0.00</b></div></div>
-            <div class="expense-table-card"><div class="expense-table-top"><div><h2>Tabel Pengeluaran Harian</h2><p>Jatah harian otomatis 20$ dan saldo utama otomatis 400$. Isi hanya kolom pengeluaran.</p></div><button class="btn btn-soft" id="resetExpenseBtn" type="button">Reset Bulan</button></div><div class="expense-scroll"><table class="expense-table"><thead><tr><th>Tanggal</th><th>Jatah Harian</th><th>Pengeluaran</th><th>Sisa Saldo</th><th>Status</th><th>Saldo Utama</th></tr></thead><tbody id="expenseRows"></tbody></table></div></div>
+            <div class="expense-summary"><div><small>Saldo Utama Saat Ini</small><b id="expMain">0.00$</b><button id="openTopupBtn" class="expense-mini-btn" type="button">+ Tambah Saldo</button><button id="openEditBalanceBtn" class="expense-mini-btn ghost" type="button">Edit Saldo Awal</button></div><div><small>Total Jatah Harian</small><b id="expAllowance">0.00$</b></div><div><small>Total Pengeluaran</small><b id="expSpent">0.00$</b></div><div><small>Sisa Jatah Hari Ini</small><b id="expRemain">0.00$</b></div></div>
+            <div class="expense-table-card"><div class="expense-table-top"><div><h2>Tabel Pengeluaran Harian</h2><p>Jatah harian otomatis 20$. Isi hanya kolom pengeluaran. Saldo utama awal 400$ akan berkurang mengikuti total pengeluaran.</p></div><button class="btn btn-soft" id="resetExpenseBtn" type="button">Reset Bulan</button></div><div class="expense-scroll"><table class="expense-table"><thead><tr><th>Tanggal</th><th>Jatah Harian</th><th>Pengeluaran</th><th>Sisa Saldo</th><th>Status</th><th>Saldo Utama</th></tr></thead><tbody id="expenseRows"></tbody></table></div></div>
           </div>
         </section>
       </section>
     </div>
   </main>
+
+
+  <div id="balanceModal" class="modal">
+    <form id="balanceForm" class="modal-box balance-modal-box">
+      <div class="modal-actions" style="justify-content:space-between;margin:0 0 14px">
+        <h3 id="balanceModalTitle">Tambah Saldo Utama</h3>
+        <button type="button" class="modal-close" data-close="balanceModal">×</button>
+      </div>
+      <p id="balanceModalText" class="balance-modal-text">Masukkan jumlah Dollar yang ingin ditambahkan ke saldo utama.</p>
+      <div class="field"><label id="balanceAmountLabel">Jumlah Tambahan</label><div class="balance-input-wrap"><input id="balanceAmountInput" inputmode="decimal" placeholder="Contoh: 100"><span>$</span></div></div>
+      <div class="field" id="balanceNoteField"><label>Catatan</label><input id="balanceNoteInput" placeholder="Contoh: Tukar saldo ke Dollar"></div>
+      <div class="modal-actions"><button type="button" class="btn btn-soft" data-close="balanceModal">Batal</button><button class="btn btn-pink" type="submit">Simpan Saldo</button></div>
+    </form>
+  </div>
 
   <div id="accountSettingsModal" class="modal">
     <form id="accountSettingsForm" class="modal-box account-settings-box">
@@ -1227,54 +1252,102 @@
 
     // PENGELUARAN NADYA
     const EXP_KEY="ndy30Expense";
-    const usd=new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"});
-    let exp={month:"",rows:[]};
+    let exp={month:"",rows:[],baseBalance:400,topups:[]};
+    let balanceModalMode="topup";
     const DAILY_ALLOWANCE=20;
-    const MAIN_BALANCE=400;
+
     function expRows(){return Array.from({length:31},(_,i)=>({day:i+1,spending:""}));}
     function num(v){const n=parseFloat(String(v??"").replace(/[^0-9.-]/g,""));return Number.isFinite(n)?n:0;}
     function usdAfter(v){return `${Number(v||0).toFixed(2)}<span class="usd-after">$</span>`;}
     function expLoad(month){
       try{
         const x=JSON.parse(localStorage.getItem(`${EXP_KEY}_${month}`)||"null");
-        exp=x&&x.rows
-          ? {month,rows:expRows().map((r,i)=>({day:r.day,spending:x.rows[i]?.spending??""}))}
-          : {month,rows:expRows()};
-      }catch{exp={month,rows:expRows()};}
+        exp=x&&x.rows?{
+          month,
+          rows:expRows().map((r,i)=>({day:r.day,spending:x.rows[i]?.spending??""})),
+          baseBalance:Number.isFinite(Number(x.baseBalance))?Number(x.baseBalance):400,
+          topups:Array.isArray(x.topups)?x.topups:[]
+        }:{month,rows:expRows(),baseBalance:400,topups:[]};
+      }catch{exp={month,rows:expRows(),baseBalance:400,topups:[]};}
     }
     function expSave(){try{localStorage.setItem(`${EXP_KEY}_${exp.month}`,JSON.stringify(exp));}catch(e){console.warn(e);}}
+    function totalTopups(){return (exp.topups||[]).reduce((sum,t)=>sum+num(t.amount),0)}
     function expCalc(){
+      let main=exp.baseBalance+totalTopups();
       return exp.rows.map(r=>{
-        const s=num(r.spending);
-        const remaining=DAILY_ALLOWANCE-s;
-        const status=remaining<0?"over":(s>0?"warning":"safe");
-        return {...r,a:DAILY_ALLOWANCE,s,remaining,status};
+        const spent=num(r.spending);
+        const dailyRemain=DAILY_ALLOWANCE-spent;
+        main-=spent;
+        const status=spent>DAILY_ALLOWANCE?"danger":"safe";
+        return {...r,spent,dailyRemain,main,status};
       });
+    }
+    function updateExpenseSummary(rows){
+      const totalSpent=rows.reduce((sum,r)=>sum+r.spent,0);
+      const totalAllowance=rows.length*DAILY_ALLOWANCE;
+      const currentMain=(exp.baseBalance+totalTopups())-totalSpent;
+      const currentDaily=rows.find(r=>r.day===new Date().getDate()) || rows[0];
+      $("#expMain").innerHTML=usdAfter(currentMain);
+      $("#expAllowance").innerHTML=usdAfter(totalAllowance);
+      $("#expSpent").innerHTML=usdAfter(totalSpent);
+      $("#expRemain").innerHTML=usdAfter(currentDaily?.dailyRemain ?? DAILY_ALLOWANCE);
+    }
+    function updateExpenseLiveFromInput(input){
+      const index=Number(input.dataset.expIndex);
+      if(!Number.isInteger(index)||!exp.rows[index])return;
+      exp.rows[index].spending=input.value;
+      const rows=expCalc();
+      const row=input.closest("tr");
+      if(row){
+        const item=rows[index];
+        const remain=row.querySelector("[data-exp-remain]");
+        const status=row.querySelector("[data-exp-status]");
+        const main=row.querySelector("[data-exp-main]");
+        if(remain)remain.innerHTML=usdAfter(item.dailyRemain);
+        if(status){status.textContent=item.status==="danger"?"Bahaya":"Aman";status.className=`expense-status ${item.status==="danger"?"over":"safe"}`;}
+        if(main)main.innerHTML=usdAfter(item.main);
+        // update saldo utama pada hari-hari sesudahnya tanpa merender ulang input
+        const future=$$("#expenseRows tr");
+        future.forEach((tr,i)=>{
+          if(i>index){
+            const m=tr.querySelector("[data-exp-main]");
+            if(m)m.innerHTML=usdAfter(rows[i].main);
+          }
+        });
+      }
+      updateExpenseSummary(rows);
+      expSave();
     }
     function expRender(){
       const body=$("#expenseRows");if(!body)return;
       const rows=expCalc();
-      body.innerHTML=rows.map((r,i)=>{
-        const tx=r.status==="over"?"Melebihi Jatah":r.status==="warning"?"Terpakai":"Aman";
-        return `<tr>
-          <td><b>${String(r.day).padStart(2,"0")}</b></td>
-          <td><span class="expense-fixed">20<span class="usd-after">$</span></span></td>
-          <td><span class="expense-spending-wrap"><input class="expense-input" data-exp-field="spending" data-exp-index="${i}" placeholder="0.00" value="${safe(r.spending||"")}"><span class="usd-after">$</span></span></td>
-          <td>${usdAfter(r.remaining)}</td>
-          <td><span class="expense-status ${r.status}">${tx}</span></td>
-          <td><span class="expense-fixed">400<span class="usd-after">$</span></span></td>
-        </tr>`;
-      }).join("");
-      const totalAllowance=rows.reduce((x,r)=>x+r.a,0);
-      const totalSpent=rows.reduce((x,r)=>x+r.s,0);
-      const totalRemain=rows.reduce((x,r)=>x+r.remaining,0);
-      $("#expMain").innerHTML=usdAfter(MAIN_BALANCE);
-      $("#expAllowance").innerHTML=usdAfter(totalAllowance);
-      $("#expSpent").innerHTML=usdAfter(totalSpent);
-      $("#expRemain").innerHTML=usdAfter(totalRemain);
+      body.innerHTML=rows.map((r,i)=>`<tr>
+        <td><b>${String(r.day).padStart(2,"0")}</b></td>
+        <td><span class="expense-fixed">20<span class="usd-after">$</span></span></td>
+        <td><span class="expense-spending-wrap"><input class="expense-input" data-exp-field="spending" data-exp-index="${i}" placeholder="0.00" value="${safe(r.spending||"")}"><span class="usd-after">$</span></span></td>
+        <td data-exp-remain>${usdAfter(r.dailyRemain)}</td>
+        <td><span data-exp-status class="expense-status ${r.status==="danger"?"over":"safe"}">${r.status==="danger"?"Bahaya":"Aman"}</span></td>
+        <td data-exp-main>${usdAfter(r.main)}</td>
+      </tr>`).join("");
+      updateExpenseSummary(rows);
     }
-    function expInit(){const m=$("#expenseMonth");if(!m)return;if(!m.value){const d=new Date();m.value=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;}expLoad(m.value);expRender();}
-
+    function expInit(){
+      const m=$("#expenseMonth");if(!m)return;
+      if(!m.value){const d=new Date();m.value=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;}
+      expLoad(m.value);expRender();
+    }
+    function openBalanceModal(mode){
+      balanceModalMode=mode;
+      const isTopup=mode==="topup";
+      $("#balanceModalTitle").textContent=isTopup?"Tambah Saldo Utama":"Edit Saldo Awal";
+      $("#balanceModalText").textContent=isTopup?"Masukkan jumlah Dollar yang ingin ditambahkan setelah tukar saldo ke Dollar.":"Ubah saldo utama awal untuk bulan yang dipilih.";
+      $("#balanceAmountLabel").textContent=isTopup?"Jumlah Tambahan":"Saldo Utama Awal";
+      $("#balanceAmountInput").value=isTopup?"":String(exp.baseBalance||400);
+      $("#balanceNoteField").style.display=isTopup?"block":"none";
+      $("#balanceNoteInput").value="";
+      openModal("balanceModal");
+      setTimeout(()=>$("#balanceAmountInput")?.focus(),80);
+    }
     function updateStats(){
       $("#statNotes").textContent=notes.length;
       $("#statPrediksi").textContent=predictions.length;
@@ -1558,12 +1631,31 @@
     $("#expenseRows")?.addEventListener("input",e=>{
       const x=e.target.closest("[data-exp-field]");
       if(!x || x.dataset.expField!=="spending")return;
-      exp.rows[Number(x.dataset.expIndex)].spending=x.value;
-      expSave();
-      expRender();
+      updateExpenseLiveFromInput(x);
     });
+    $("#expenseRows")?.addEventListener("blur",e=>{
+      const x=e.target.closest("[data-exp-field]");
+      if(!x)return;
+      expRender();
+    },true);
     $("#saveExpenseBtn")?.addEventListener("click",()=>{expSave();toast("Pengeluaran Nadya berhasil disimpan.");});
-    $("#resetExpenseBtn")?.addEventListener("click",()=>{if(!confirm("Reset pengeluaran bulan ini?"))return;exp={month:$("#expenseMonth").value,rows:expRows()};expSave();expRender();toast("Tabel pengeluaran direset.");});
+    $("#resetExpenseBtn")?.addEventListener("click",()=>{if(!confirm("Reset pengeluaran bulan ini?"))return;exp={month:$("#expenseMonth").value,rows:expRows(),baseBalance:400,topups:[]};expSave();expRender();toast("Tabel pengeluaran direset.");});
+    $("#openTopupBtn")?.addEventListener("click",()=>openBalanceModal("topup"));
+    $("#openEditBalanceBtn")?.addEventListener("click",()=>openBalanceModal("edit"));
+    $("#balanceForm")?.addEventListener("submit",e=>{
+      e.preventDefault();
+      const amount=num($("#balanceAmountInput").value);
+      if(amount<0 || !Number.isFinite(amount)){toast("Masukkan nominal saldo yang benar.");return;}
+      if(balanceModalMode==="topup"){
+        if(amount<=0){toast("Jumlah tambahan harus lebih dari 0$.");return;}
+        exp.topups.push({amount,note:$("#balanceNoteInput").value.trim(),createdAt:Date.now()});
+        toast("Saldo utama berhasil ditambahkan.");
+      }else{
+        exp.baseBalance=amount;
+        toast("Saldo utama awal berhasil diubah.");
+      }
+      expSave();expRender();closeModal("balanceModal");
+    });
 
     $("#hamburger").addEventListener("click",()=>$("#sidebar").classList.toggle("open"));
     $$(".nav-btn").forEach(b=>b.addEventListener("click",()=>switchPage(b.dataset.page)));
