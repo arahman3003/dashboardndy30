@@ -873,6 +873,10 @@
     .balance-input-wrap input{border:0!important;box-shadow:none!important;flex:1}
     .balance-input-wrap span{font-weight:950;color:#8e315f}
 
+
+    /* FORMAT TANGGAL PENGELUARAN */
+    .expense-table td:first-child b{white-space:nowrap;letter-spacing:.15px}
+
 </style>
 
   <script>
@@ -1259,6 +1263,12 @@
     function expRows(){return Array.from({length:31},(_,i)=>({day:i+1,spending:""}));}
     function num(v){const n=parseFloat(String(v??"").replace(/[^0-9.-]/g,""));return Number.isFinite(n)?n:0;}
     function usdAfter(v){return `${Number(v||0).toFixed(2)}<span class="usd-after">$</span>`;}
+    function formatExpenseDate(day){
+      const parts=String(exp.month||"").split("-");
+      const year=parts[0]||new Date().getFullYear();
+      const month=parts[1]||String(new Date().getMonth()+1).padStart(2,"0");
+      return `${String(day).padStart(2,"0")}/${month}/${year}`;
+    }
     function expLoad(month){
       try{
         const x=JSON.parse(localStorage.getItem(`${EXP_KEY}_${month}`)||"null");
@@ -1322,7 +1332,7 @@
       const body=$("#expenseRows");if(!body)return;
       const rows=expCalc();
       body.innerHTML=rows.map((r,i)=>`<tr>
-        <td><b>${String(r.day).padStart(2,"0")}</b></td>
+        <td><b>${formatExpenseDate(r.day)}</b></td>
         <td><span class="expense-fixed">20<span class="usd-after">$</span></span></td>
         <td><span class="expense-spending-wrap"><input class="expense-input" data-exp-field="spending" data-exp-index="${i}" placeholder="0.00" value="${safe(r.spending||"")}"><span class="usd-after">$</span></span></td>
         <td data-exp-remain>${usdAfter(r.dailyRemain)}</td>
