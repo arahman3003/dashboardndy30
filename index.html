@@ -877,6 +877,36 @@
     /* FORMAT TANGGAL PENGELUARAN */
     .expense-table td:first-child b{white-space:nowrap;letter-spacing:.15px}
 
+
+    /* RAPikan TABEL PENGELUARAN — SEMUA KOLOM RATA TENGAH */
+    .expense-table th,
+    .expense-table td{
+      text-align:center!important;
+      vertical-align:middle!important;
+    }
+    .expense-table th:first-child,
+    .expense-table td:first-child{
+      text-align:center!important;
+    }
+    .expense-table td:first-child b{
+      display:inline-block;
+      min-width:92px;
+      text-align:center!important;
+    }
+    .expense-table .expense-input{
+      text-align:center!important;
+      margin:0!important;
+    }
+    .expense-table .expense-spending-wrap,
+    .expense-table .expense-fixed,
+    .expense-table .expense-status{
+      margin-left:auto!important;
+      margin-right:auto!important;
+    }
+    .expense-table .expense-spending-wrap{
+      justify-content:center!important;
+    }
+
 </style>
 
   <script>
