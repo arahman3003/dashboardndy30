@@ -1409,15 +1409,57 @@
     function expLoad(month){
       try{
         const x=JSON.parse(localStorage.getItem(`${EXP_KEY}_${month}`)||"null");
-        exp=x&&x.rows?{
-          month,
-          rows:expRows().map((r,i)=>({day:r.day,spending:x.rows[i]?.spending??""})),
-          baseBalance:Number.isFinite(Number(x.baseBalance))?Number(x.baseBalance):400,
-          topups:Array.isArray(x.topups)?x.topups:[]
-        }:{month,rows:expRows(),baseBalance:400,topups:[]};
+        exp=x&&x.rows?normalizeExpenseData(x,month):{month,rows:expRows(),baseBalance:400,topups:[]};
       }catch{exp={month,rows:expRows(),baseBalance:400,topups:[]};}
     }
-    function expSave(){try{localStorage.setItem(`${EXP_KEY}_${exp.month}`,JSON.stringify(exp));}catch(e){console.warn(e);}}
+    let expenseUnsubscribe=null;
+    let expenseSaveTimer=null;
+
+    function expenseFirebasePath(month=exp.month){
+      return `dashboardndy30/pengeluaranNadya/${String(month||"default").replace(/[^0-9-]/g,"")}`;
+    }
+    function normalizeExpenseData(data,month){
+      const source=data&&Array.isArray(data.rows)?data:{};
+      return {
+        month,
+        rows:expRows().map((r,i)=>({day:r.day,spending:source.rows?.[i]?.spending??""})),
+        baseBalance:Number.isFinite(Number(source.baseBalance))?Number(source.baseBalance):400,
+        topups:Array.isArray(source.topups)?source.topups:[]
+      };
+    }
+    function expSave(){
+      try{localStorage.setItem(`${EXP_KEY}_${exp.month}`,JSON.stringify(exp));}
+      catch(e){console.warn("Cache pengeluaran tidak tersimpan:",e);}
+
+      // Saat sudah login, data juga disimpan ke Firebase agar tidak hilang saat refresh/perangkat lain.
+      if(previewMode || !db || !currentUser || !exp.month) return;
+      clearTimeout(expenseSaveTimer);
+      expenseSaveTimer=setTimeout(async()=>{
+        try{
+          await set(ref(db,expenseFirebasePath()),{...exp,updatedAt:Date.now()});
+        }catch(err){
+          console.error("Gagal menyimpan Pengeluaran Nadya ke Firebase:",err);
+        }
+      },350);
+    }
+    async function expSaveNow(){
+      try{localStorage.setItem(`${EXP_KEY}_${exp.month}`,JSON.stringify(exp));}
+      catch(e){console.warn("Cache pengeluaran tidak tersimpan:",e);}
+      if(previewMode || !db || !currentUser || !exp.month) return;
+      clearTimeout(expenseSaveTimer);
+      await set(ref(db,expenseFirebasePath()),{...exp,updatedAt:Date.now()});
+    }
+    function subscribeExpenseFirebase(month){
+      if(expenseUnsubscribe){expenseUnsubscribe();expenseUnsubscribe=null;}
+      if(previewMode || !db || !currentUser || !month) return;
+      expenseUnsubscribe=onValue(ref(db,expenseFirebasePath(month)),snap=>{
+        const remote=snap.val();
+        if(!remote) return; // bila data Firebase belum ada, cache lokal tetap dipakai.
+        exp=normalizeExpenseData(remote,month);
+        try{localStorage.setItem(`${EXP_KEY}_${month}`,JSON.stringify(exp));}catch(e){}
+        expRender();
+      },err=>console.error("Gagal memuat Pengeluaran Nadya:",err));
+    }
     function totalTopups(){return (exp.topups||[]).reduce((sum,t)=>sum+num(t.amount),0)}
     function expCalc(){
       let main=exp.baseBalance+totalTopups();
@@ -1739,6 +1781,8 @@
           applyDashboardSettings(dashboardSettings);
           setAppVisible(true);
           switchPage(getLastPage(),{save:false,scroll:false});
+          const expenseMonth=$("#expenseMonth")?.value;
+          if(expenseMonth) subscribeExpenseFirebase(expenseMonth);
         } else if(!previewMode){
           setAppVisible(false);
           closeLoginCard();
@@ -1783,9 +1827,18 @@
         btn.disabled=false;btn.innerHTML=originalText;
       }
     });
-    $("#logoutBtn").addEventListener("click",async()=>{if(previewMode){previewMode=false;setAppVisible(false);closeLoginCard();return;}await signOut(auth);closeLoginCard();});
+    $("#logoutBtn").addEventListener("click",async()=>{
+      if(expenseUnsubscribe){expenseUnsubscribe();expenseUnsubscribe=null;}
+      if(previewMode){previewMode=false;setAppVisible(false);closeLoginCard();return;}
+      await signOut(auth);
+      closeLoginCard();
+    });
 
-    $("#expenseMonth")?.addEventListener("change",e=>{expLoad(e.target.value);expRender();});
+    $("#expenseMonth")?.addEventListener("change",e=>{
+      expLoad(e.target.value);
+      expRender();
+      subscribeExpenseFirebase(e.target.value);
+    });
     $("#expenseRows")?.addEventListener("input",e=>{
       const x=e.target.closest("[data-exp-field]");
       if(!x || x.dataset.expField!=="spending")return;
@@ -1796,7 +1849,15 @@
       if(!x)return;
       expRender();
     },true);
-    $("#saveExpenseBtn")?.addEventListener("click",()=>{expSave();toast("Pengeluaran Nadya berhasil disimpan.");});
+    $("#saveExpenseBtn")?.addEventListener("click",async()=>{
+      try{
+        await expSaveNow();
+        toast(previewMode?"Pengeluaran Nadya tersimpan di perangkat.":"Pengeluaran Nadya berhasil disimpan ke Firebase.");
+      }catch(err){
+        console.error(err);
+        toast("Gagal menyimpan ke Firebase. Coba lagi.");
+      }
+    });
     $("#resetExpenseBtn")?.addEventListener("click",()=>{if(!confirm("Reset pengeluaran bulan ini?"))return;exp={month:$("#expenseMonth").value,rows:expRows(),baseBalance:400,topups:[]};expSave();expRender();toast("Tabel pengeluaran direset.");});
     $("#openTopupBtn")?.addEventListener("click",()=>openBalanceModal("topup"));
     $("#openEditBalanceBtn")?.addEventListener("click",()=>openBalanceModal("edit"));
