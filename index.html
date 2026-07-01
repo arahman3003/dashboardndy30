@@ -944,6 +944,68 @@
       .gallery-viewer-box img{max-height:78vh}
     }
 
+
+    /* CARD GAMBAR — JUDUL, TANGGAL, EDIT/HAPUS LEBIH RAPI */
+    .gallery-card{
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+    }
+    .gallery-body{
+      display:flex!important;
+      flex:1;
+      flex-direction:column;
+      padding:12px!important;
+    }
+    .gallery-title{
+      min-height:34px;
+      padding-bottom:9px;
+      border-bottom:1px solid #f1d4e1;
+      color:#662644;
+      font-size:13px!important;
+      font-weight:950!important;
+      text-align:center;
+      line-height:1.25;
+      text-transform:uppercase;
+    }
+    .gallery-date{
+      display:block;
+      min-height:33px;
+      padding:9px 2px 7px;
+      color:#8d6074;
+      font-size:10px;
+      font-weight:800;
+      line-height:1.25;
+      text-align:center;
+    }
+    .gallery-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:7px;
+      margin-top:auto;
+    }
+    .gallery-actions .mini{
+      width:100%;
+      min-height:32px;
+      margin:0;
+      border-radius:9px;
+      font-size:11px;
+      font-weight:950;
+      cursor:pointer;
+      transition:transform .16s ease,filter .16s ease;
+    }
+    .gallery-actions .mini:hover{transform:translateY(-1px);filter:brightness(.98)}
+    .gallery-actions .edit-image-btn{
+      border-color:#f4c4d9;
+      background:#fff3f8;
+      color:#a92e65;
+    }
+    .gallery-actions .delete-image-btn{
+      border-color:#e9bcc9;
+      background:#fff0f3;
+      color:#bd355a;
+    }
+
 </style>
 
   <script>
@@ -1490,12 +1552,20 @@
 
     function imageCard(g){
       const url=safe(g.url);
+      const dateText=g.createdAt?new Date(g.createdAt).toLocaleString("id-ID"):"koleksi gambar";
       return `<article class="gallery-card" data-gallery-card="${safe(g.id)}">
         <button class="gallery-image-open" type="button" data-view-image="${safe(g.id)}" aria-label="Lihat ${safe(g.title)}">
           <img src="${url}" alt="${safe(g.title)}" onerror="this.outerHTML='<div class=&quot;placeholder-img&quot; style=&quot;height:210px&quot;>Gambar tidak dapat dimuat</div>'">
           <span class="gallery-zoom-hint">⌕ Lihat Gambar</span>
         </button>
-        <div class="gallery-body"><b>${safe(g.title)}</b><div class="gallery-meta"><small>${g.createdAt?new Date(g.createdAt).toLocaleString("id-ID"):"koleksi gambar"}</small><span><button class="mini" data-edit-image="${safe(g.id)}">Edit</button> <button class="mini" data-delete-image="${safe(g.id)}">Hapus</button></span></div></div>
+        <div class="gallery-body">
+          <b class="gallery-title">${safe(g.title)}</b>
+          <small class="gallery-date">${dateText}</small>
+          <div class="gallery-actions">
+            <button class="mini edit-image-btn" data-edit-image="${safe(g.id)}">Edit</button>
+            <button class="mini delete-image-btn" data-delete-image="${safe(g.id)}">Hapus</button>
+          </div>
+        </div>
       </article>`;
     }
     function renderImages(){
