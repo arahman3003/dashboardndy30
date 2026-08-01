@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DashboardNdy</title>
+  <title>DashboardNdy V385</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Ctext%20x%3D%2232%22%20y%3D%2245%22%20text-anchor%3D%22middle%22%20font-size%3D%2248%22%3E%F0%9F%8C%B8%3C/text%3E%3C/svg%3E" />
   <style>
     :root{
@@ -1205,7 +1205,7 @@
         <section id="page-pengeluaran" class="page">
           <div class="expense-shell">
             <div class="expense-head"><div><span>💵 CATATAN KEUANGAN</span><h1>Pengeluaran Nadya</h1><p>Jatah harian dan saldo utama dibuat otomatis dalam Dollar Amerika.</p></div><div class="expense-controls"><input id="expenseMonth" type="month"><button class="btn btn-pink" id="saveExpenseBtn" type="button">Simpan Semua</button></div></div>
-            <div class="expense-summary"><div><small>Saldo Utama Saat Ini</small><b id="expMain">0.00$</b><button id="openTopupBtn" class="expense-mini-btn" type="button">+ Tambah Saldo</button><button id="openEditBalanceBtn" class="expense-mini-btn ghost" type="button">Edit Saldo Awal</button></div><div><small>Total Jatah Harian</small><b id="expAllowance">0.00$</b></div><div><small>Total Pengeluaran</small><b id="expSpent">0.00$</b></div><div><small>Sisa Jatah Hari Ini</small><b id="expRemain">0.00$</b></div></div>
+            <div class="expense-summary"><div><small>Saldo Utama Saat Ini</small><b id="expMain">0.00$</b><button id="openTopupBtn" class="expense-mini-btn" type="button">+ Tambah Saldo</button><button id="openEditBalanceBtn" class="expense-mini-btn ghost" type="button">Edit Saldo Awal</button></div><div><small id="expTopupLabel">Total Penambahan Saldo Awal</small><b id="expTopupTotal">0.00$</b></div><div><small>Total Pengeluaran</small><b id="expSpent">0.00$</b></div><div><small>Sisa Jatah Hari Ini</small><b id="expRemain">0.00$</b></div></div>
             <div class="expense-table-card"><div class="expense-table-top"><div><h2>Tabel Pengeluaran Harian</h2><p>Jatah harian otomatis 20$. Isi hanya kolom pengeluaran. Saldo utama awal 400$ akan berkurang mengikuti total pengeluaran.</p></div><button class="btn btn-soft" id="resetExpenseBtn" type="button">Reset Bulan</button></div><div class="expense-scroll"><table class="expense-table"><thead><tr><th>Tanggal</th><th>Jatah Harian</th><th>Pengeluaran</th><th>Sisa Saldo</th><th>Status</th><th>Saldo Utama</th></tr></thead><tbody id="expenseRows"></tbody></table></div></div>
           </div>
         </section>
@@ -1512,11 +1512,13 @@
     }
     function updateExpenseSummary(rows){
       const totalSpent=rows.reduce((sum,r)=>sum+r.spent,0);
-      const totalAllowance=rows.length*DAILY_ALLOWANCE;
-      const currentMain=(exp.baseBalance+totalTopups())-totalSpent;
+      const totalBalanceAdded=totalTopups();
+      const currentMain=(exp.baseBalance+totalBalanceAdded)-totalSpent;
       const currentDaily=rows.find(r=>r.day===new Date().getDate()) || rows[0];
       $("#expMain").innerHTML=usdAfter(currentMain);
-      $("#expAllowance").innerHTML=usdAfter(totalAllowance);
+      // Kartu kedua khusus mencatat seluruh penambahan saldo pada bulan aktif.
+      $("#expTopupLabel").textContent="Total Penambahan Saldo Awal";
+      $("#expTopupTotal").innerHTML=usdAfter(totalBalanceAdded);
       $("#expSpent").innerHTML=usdAfter(totalSpent);
       $("#expRemain").innerHTML=usdAfter(currentDaily?.dailyRemain ?? DAILY_ALLOWANCE);
     }
@@ -2397,5 +2399,6 @@ $("#noteImageFile")?.addEventListener("change",async e=>{
 
         if(FIREBASE_READY) startFirebase();
   </script>
+<!-- VERSION: V385 TOTAL TAMBAH SALDO FIX -->
 </body>
 </html>
